@@ -1,6 +1,7 @@
-import { Form, Input, Button } from "antd";
+import { Form, Input } from "antd";
 import MainLayout from "../../components/Layouts/MainLayout";
 import { Link } from "react-router-dom";
+import PinkButton from "../../components/Buttons/Button";
 
 export default function Login() {
   return (
@@ -24,21 +25,23 @@ export default function Login() {
               />
             </Form.Item>
             <Form.Item
-              label={<label className="text-white font-light">Name</label>}
+              rootClassName="rm-password-field"
+              label={<label className="text-white font-light">Password</label>}
               rules={[{ required: true, message: "This field is required" }]}
             >
-              <Input
-                className="bg-zinc-900 w-full hover:bg-zinc-900 focus:bg-zinc-900 text-white"
+              <Input.Password
+                className="w-full text-white"
                 placeholder="Enter password"
               />
             </Form.Item>
             <Form.Item className="mt-2">
-              <Button
-                className="w-full bg-pink-500 text-white py-2 h-fit"
+              <PinkButton
+                className="w-full py-2 h-fit"
+                htmlType="submit"
                 type="primary"
               >
                 Login
-              </Button>
+              </PinkButton>
             </Form.Item>
             <div className="flex items-center gap-2">
               <p className="text-white">New Customer?</p>

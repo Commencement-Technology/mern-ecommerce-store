@@ -1,3 +1,32 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+
+.rm-navigation-drawer .ant-drawer-content {
+  background-color: #27272a;
+  color: white;
+}
+
+.rm-navigation-drawer .ant-drawer-close {
+  color: white;
+}
+
+.rm-navigation-drawer .ant-drawer .ant-drawer-close:hover {
+  color: white;
+}
+
+.rm-password-field .ant-input-outlined {
+  background-color: #18181b;
+}
+
+.rm-password-field .ant-input-affix-wrapper .anticon.ant-input-password-icon {
+  color: rgb(255 255 255 / 83%);
+}
+
+.rm-password-field .ant-input-outlined:focus-within {
+  background-color: #18181b;
+}
+
+.rm-input-error {
+  background-color: #18181b !important;
+}

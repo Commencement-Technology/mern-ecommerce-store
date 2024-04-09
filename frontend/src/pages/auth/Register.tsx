@@ -1,20 +1,51 @@
 import { Link } from "react-router-dom";
 import MainLayout from "../../components/Layouts/MainLayout";
-import { Button, Form, Input } from "antd";
+import { Form, Input } from "antd";
+import Button from "../../components/Buttons/Button";
+import axios from "axios";
+import { ToastContainer } from "react-toastify";
+
+type FormValues = {
+  username: string;
+  email: string;
+  password: string;
+};
 
 export default function Register() {
+  const onFinish = (values: FormValues) => {
+    console.log(values);
+    axios
+      .post("http://localhost:5001/api/users/register", {
+        username: values.username,
+        email: values.email,
+        password: values.password,
+      })
+      .then(
+        (response) => {
+          console.log(response.data);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+  };
+
   return (
     <MainLayout>
+      <ToastContainer />
       <div className="bg-zinc-900 p-4 h-[100vh] w-full flex justify-between">
         <div className="flex flex-col justify-center items-center text-left w-full px-5 md:w-1/2 md:mx-auto lg:px-0 lg:w-1/2 lg:mx-auto">
           <h1 className="text-white font-bold text-3xl py-3 text-left items-start justify-start">
             Register
           </h1>
           <Form
+            autoComplete="off"
+            onFinish={(values) => onFinish(values as FormValues)}
             layout="vertical"
-            className="w-full px-5 lg:px-0 lg:w-3/4 lg:mx-auto"
+            className="w-full px-5 lg:px-0 lg:w-1/2 lg:mx-auto"
           >
             <Form.Item
+              name="username"
               label={<label className="text-white font-light">Name</label>}
               rules={[{ required: true, message: "This field is required" }]}
             >
@@ -24,27 +55,35 @@ export default function Register() {
               />
             </Form.Item>
             <Form.Item
+              name="email"
               label={<label className="text-white font-light">Email</label>}
-              rules={[{ required: true, message: "This field is required" }]}
+              rules={[
+                { required: true, message: "This field is required" },
+                { type: "email", message: "The email isn't valid" },
+              ]}
             >
               <Input
-                className="bg-zinc-900 w-full hover:bg-zinc-900 focus:bg-zinc-900 text-white"
+                rootClassName="rm-input-error"
+                className="bg-zinc-900 w-full active:bg-zinc-900 hover:bg-zinc-900 focus:bg-zinc-900 text-white"
                 placeholder="Enter email"
               />
             </Form.Item>
             <Form.Item
-              label={<label className="text-white font-light">Name</label>}
+              name="password"
+              rootClassName="rm-password-field"
+              label={<label className="text-white font-light">Password</label>}
               rules={[{ required: true, message: "This field is required" }]}
             >
-              <Input
-                className="bg-zinc-900 w-full hover:bg-zinc-900 focus:bg-zinc-900 text-white"
+              <Input.Password
+                className="w-full text-white"
                 placeholder="Enter password"
               />
             </Form.Item>
             <Form.Item className="mt-2">
               <Button
-                className="w-full bg-pink-500 text-white py-2 h-fit"
+                className="py-2 h-fit w-full"
                 type="primary"
+                htmlType="submit"
               >
                 Register
               </Button>
