@@ -3,17 +3,13 @@ import MainLayout from "../../components/Layouts/MainLayout";
 import { Form, Input } from "antd";
 import Button from "../../components/Buttons/Button";
 import axios from "axios";
-import { ToastContainer } from "react-toastify";
-
-type FormValues = {
-  username: string;
-  email: string;
-  password: string;
-};
+import { ToastContainer, toast } from "react-toastify";
+import { FormValues } from "../../types";
 
 export default function Register() {
   const onFinish = (values: FormValues) => {
     console.log(values);
+
     axios
       .post("http://localhost:5001/api/users/register", {
         username: values.username,
@@ -22,10 +18,20 @@ export default function Register() {
       })
       .then(
         (response) => {
-          console.log(response.data);
+          console.log(response);
+          if (response.status === 200) {
+            toast.success("Signed up successfully!");
+          }
         },
         (error) => {
           console.log(error);
+          if (error && error.response && error.response.data) {
+            if (error.response.status === 401) {
+              toast.error("User data is not valid!");
+            } else {
+              toast.error("Oops! Some problem occured! Try again later..");
+            }
+          }
         }
       );
   };
@@ -50,6 +56,7 @@ export default function Register() {
               rules={[{ required: true, message: "This field is required" }]}
             >
               <Input
+                rootClassName="rm-input-error"
                 className="bg-zinc-900 w-full hover:bg-zinc-900 focus:bg-zinc-900 text-white"
                 placeholder="Enter name"
               />
@@ -75,6 +82,7 @@ export default function Register() {
               rules={[{ required: true, message: "This field is required" }]}
             >
               <Input.Password
+                rootClassName="rm-input-error"
                 className="w-full text-white"
                 placeholder="Enter password"
               />

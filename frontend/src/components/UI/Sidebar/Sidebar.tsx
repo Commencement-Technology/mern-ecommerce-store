@@ -7,10 +7,20 @@ import { IoMdLogIn } from "react-icons/io";
 import { GiHamburgerMenu } from "react-icons/gi";
 import "./Sidebar.css";
 import { Drawer } from "antd";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../../../contexts/AuthContext";
 
 export default function Sidebar() {
   const [showDrawer, setShowDrawer] = useState(false);
+  // const { getCurrentUser, isLoggedIn } = useContext(AuthContext);
+
+  // useEffect(() => {
+  //   alert("rumaisa");
+  //   if (isLoggedIn) {
+  //     getCurrentUser();
+  //   }
+  // }, [isLoggedIn]);
+
   return (
     <div>
       <NavigationDrawer showDrawer={showDrawer} setShowDrawer={setShowDrawer} />

@@ -1,47 +1,93 @@
 import { Form, Input } from "antd";
 import MainLayout from "../../components/Layouts/MainLayout";
 import { Link } from "react-router-dom";
-import PinkButton from "../../components/Buttons/Button";
+import Button from "../../components/Buttons/Button";
+import { FormValues } from "../../types";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import { useContext } from "react";
+import { AuthContext } from "../../contexts/AuthContext";
 
 export default function Login() {
+  const { setIsLoggedIn, getCurrentUser } = useContext(AuthContext);
+
+  const onFinish = (values: FormValues) => {
+    console.log(values);
+    axios
+      .post("http://localhost:5001/api/users/login", {
+        email: values.email,
+        password: values.password,
+      })
+      .then(
+        (response) => {
+          if (response.status === 200) {
+            localStorage.setItem("token", response.data.accessToken);
+            setIsLoggedIn(true);
+            toast.success("Logged in successfully");
+            getCurrentUser();
+          }
+        },
+        (error) => {
+          console.log(error);
+          if (error.response && error.response.data && error.response.data) {
+            if (error.response.status === 400) {
+              toast.error(error.response.data.title);
+            } else {
+              toast.error("Oops! Some problem occured! Try again later..");
+            }
+          }
+        }
+      );
+  };
+
   return (
     <MainLayout>
+      <ToastContainer />
       <div className="bg-zinc-900 p-4 h-[100vh] w-full flex justify-between">
         <div className="flex flex-col justify-center items-center text-left w-full px-5 md:w-1/2 md:mx-auto lg:px-0 lg:w-1/2 lg:mx-auto">
           <h1 className="text-white font-bold text-3xl py-3 text-left items-start justify-start">
             Login
           </h1>
           <Form
+            autoComplete="off"
             layout="vertical"
             className="w-full px-5 lg:px-0 lg:w-1/2 lg:mx-auto"
+            onFinish={(values) => onFinish(values as FormValues)}
           >
             <Form.Item
+              name="email"
               label={<label className="text-white font-light">Email</label>}
-              rules={[{ required: true, message: "This field is required" }]}
+              rules={[
+                { required: true, message: "This field is required" },
+                { type: "email", message: "Please enter valid email address" },
+              ]}
             >
               <Input
+                rootClassName="rm-login-input-error"
                 className="bg-zinc-900 w-full hover:bg-zinc-900 focus:bg-zinc-900 text-white"
                 placeholder="Enter email"
               />
             </Form.Item>
             <Form.Item
+              name="password"
               rootClassName="rm-password-field"
               label={<label className="text-white font-light">Password</label>}
               rules={[{ required: true, message: "This field is required" }]}
             >
               <Input.Password
+                rootClassName="rm-login-input-error"
                 className="w-full text-white"
                 placeholder="Enter password"
               />
             </Form.Item>
             <Form.Item className="mt-2">
-              <PinkButton
-                className="w-full py-2 h-fit"
-                htmlType="submit"
+              <Button
                 type="primary"
+                htmlType="submit"
+                className="w-full py-2 h-fit"
               >
                 Login
-              </PinkButton>
+              </Button>
             </Form.Item>
             <div className="flex items-center gap-2">
               <p className="text-white">New Customer?</p>

@@ -24,8 +24,7 @@ const registerUser = asyncHandler(async (req, res) => {
     password: hashedPassword,
   });
   if (newUser) {
-    res.status(200);
-    res.json(newUser);
+    res.status(200).json(newUser);
   } else {
     res.status(400);
     throw new Error("User data isn't valid");
@@ -84,9 +83,9 @@ const loginUser = asyncHandler(async (req, res) => {
 const getCurrentUser = asyncHandler(async (req, res) => {
   const tokens = req.user.tokens;
   if (tokens.length > 0) {
-    res.json(req.user);
+    res.status(200).json(req.user);
   } else {
-    res.json({ message: "User has been signed out." });
+    res.json({ message: "No logged in user found." });
   }
 });
 
