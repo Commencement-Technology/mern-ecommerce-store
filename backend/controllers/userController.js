@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const createToken = require("../utils/createToken");
 
 const registerUser = asyncHandler(async (req, res) => {
   // get the req body
@@ -9,6 +10,11 @@ const registerUser = asyncHandler(async (req, res) => {
   if (!username || !email || !password) {
     res.status(400);
     throw new Error("All fields are mandatory");
+  }
+
+  if (password.length < 8) {
+    res.status(400);
+    throw new Error("Password must be 8 characters long.");
   }
   // get current user
   const availableUser = await User.findOne({ email });
@@ -18,16 +24,21 @@ const registerUser = asyncHandler(async (req, res) => {
   }
   // create user
   const hashedPassword = await bcrypt.hash(password, 10);
-  const newUser = await User.create({
-    username,
-    email,
-    password: hashedPassword,
-  });
-  if (newUser) {
-    res.status(200).json(newUser);
-  } else {
+  try {
+    const newUser = await User.create({
+      username,
+      email,
+      password: hashedPassword,
+    });
+    createToken(res, newUser._id);
+    res.status(201).json({
+      _id: newUser._id,
+      username: newUser.username,
+      email: newUser.email,
+    });
+  } catch (error) {
     res.status(400);
-    throw new Error("User data isn't valid");
+    throw new Error("Invalid user data..");
   }
 });
 
@@ -43,37 +54,12 @@ const loginUser = asyncHandler(async (req, res) => {
     availableUser &&
     (await bcrypt.compare(password, availableUser.password))
   ) {
-    const accessToken = jwt.sign(
-      {
-        user: {
-          username: availableUser.username,
-          email: availableUser.email,
-          password: availableUser.password,
-          id: availableUser.id,
-        },
-      },
-      process.env.ACCESS_TOKEN_SECRET,
-      {
-        expiresIn: "1d",
-      }
-    );
-
-    // delete old tokens
-    let oldTokens = availableUser.tokens || [];
-
-    // only filter out the tokens which are not expired yet
-    if (oldTokens.length) {
-      oldTokens.filter((t) => {
-        const timeDiff = (Date.now() - parseInt(t.signedAt)) / 1000;
-        return timeDiff < 86400;
-      });
-    }
-
-    // add all the non-expiry tokens into the db
-    await User.findByIdAndUpdate(availableUser._id, {
-      tokens: [...oldTokens, { accessToken, signedAt: Date.now().toString() }],
+    createToken(res, availableUser._id);
+    res.status(200).json({
+      _id: availableUser._id,
+      username: availableUser.username,
+      email: availableUser.email,
     });
-    res.status(200).json({ accessToken });
   } else {
     res.status(401);
     throw new Error("Email or password isn't valid");
@@ -81,30 +67,27 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const getCurrentUser = asyncHandler(async (req, res) => {
-  const tokens = req.user.tokens;
-  if (tokens.length > 0) {
-    res.status(200).json(req.user);
+  const user = await User.findById(req.user._id);
+  if (user) {
+    res.json({
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+    });
   } else {
-    res.json({ message: "No logged in user found." });
+    res.status(404);
+    throw new Error("User not found.");
   }
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
-  const authHeader = req.headers.Authorization || req.headers.authorization;
-  if (authHeader && authHeader.startsWith("Bearer")) {
-    const token = authHeader.split(" ")[1];
-    if (!token) {
-      res.status(401).json({ message: "Authorization failed!" });
-    }
+  // setting the cookie to empty
+  res.cookie("jwt", "", {
+    httpOnly: true,
+    expires: new Date(0),
+  });
 
-    // get the tokens of the verified user
-    const tokens = req.user.tokens;
-
-    // delete the new token from the tokens
-    const newTokens = tokens.filter((t) => t.accessToken !== token);
-    await User.findByIdAndUpdate(req.user._id, { tokens: newTokens });
-    res.status(200).json({ message: "User signed out successfully" });
-  }
+  res.status(200).json({ message: "User logged out successfully" });
 });
 
 module.exports = {

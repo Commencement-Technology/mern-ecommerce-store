@@ -4,6 +4,7 @@ const app = express();
 const cors = require("cors");
 const connectDB = require("./config/connectDB");
 const errorHandler = require("./middleware/errorHandler");
+const cookieParser = require("cookie-parser");
 
 // cors
 app.use(cors());
@@ -12,6 +13,7 @@ app.use(cors());
 connectDB();
 
 app.use(express.json());
+app.use(cookieParser());
 
 // routes
 app.use("/api/users", require("./routes/userRoutes"));

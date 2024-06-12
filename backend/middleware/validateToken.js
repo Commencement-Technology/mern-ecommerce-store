@@ -3,23 +3,28 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 
 const validateToken = asyncHandler(async (req, res, next) => {
-  let token;
-  const authHeader = req.headers.Authorization || req.headers.authorization;
-  if (authHeader && authHeader.startsWith("Bearer")) {
-    token = authHeader.split(" ")[1];
-    try {
-      const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-      const verifiedUserEmail = decoded.user.email;
-      const verifiedUser = await User.findOne({ email: verifiedUserEmail });
-      req.user = verifiedUser;
-      next();
-    } catch (err) {
-      res.status(401);
-      throw new Error("User is not authorized");
-    }
-  } else {
+  let token = req.cookies.jwt;
+  console.log("Token", token);
+
+  if (!token) {
     res.status(401);
-    throw new Error("User is not authorized or token is missing");
+    throw new Error("Not authorized, no token");
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    console.log("The decoded verified user object", decoded);
+    req.user = await User.findById(decoded.userId).select("-password");
+    console.log("The user object", req.user);
+
+    if (!req.user) {
+      res.status(401);
+      throw new Error("Not authorized, user not found");
+    }
+    next();
+  } catch (error) {
+    res.status(401);
+    throw new Error("Not authorized, token failed");
   }
 });
 
