@@ -1,44 +1,41 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import MainLayout from "../../components/Layouts/MainLayout";
 import { Form, Input } from "antd";
 import Button from "../../components/Buttons/Button";
-import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
 import { FormValues } from "../../types";
+import { authService } from "../../services/authService";
+import { useState } from "react";
+import { toast } from "react-toastify";
+import { Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+import { useAppDispatch } from "../../hooks";
+import { setCredentials } from "../../features/Slicers/authSlice";
 
 export default function Register() {
-  const onFinish = (values: FormValues) => {
-    console.log(values);
-
-    axios
-      .post("http://localhost:5001/api/users/register", {
-        username: values.username,
-        email: values.email,
-        password: values.password,
-      })
-      .then(
-        (response) => {
-          console.log(response);
-          if (response.status === 200) {
-            toast.success("Signed up successfully!");
-          }
-        },
-        (error) => {
-          console.log(error);
-          if (error && error.response && error.response.data) {
-            if (error.response.status === 401) {
-              toast.error("User data is not valid!");
-            } else {
-              toast.error("Oops! Some problem occured! Try again later..");
-            }
-          }
-        }
-      );
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const [loading, setLoading] = useState<boolean>(false);
+  const onFinish = async (values: any) => {
+    setLoading(true);
+    const response = await authService.registerUser(
+      values.username,
+      values.email,
+      values.password
+    );
+    console.log(response);
+    if (response?.status === 201) {
+      dispatch(setCredentials({ ...response?.data }));
+      setLoading(false);
+      toast.success("User successfully registered.");
+      navigate("/");
+    } else {
+      toast.error(response?.response?.data?.errorMsg);
+      setLoading(false);
+    }
   };
 
   return (
     <MainLayout>
-      <ToastContainer />
       <div className="bg-zinc-900 p-4 h-[100vh] w-full flex justify-between">
         <div className="flex flex-col justify-center items-center text-left w-full px-5 md:w-1/2 md:mx-auto lg:px-0 lg:w-1/2 lg:mx-auto">
           <h1 className="text-white font-bold text-3xl py-3 text-left items-start justify-start">
@@ -92,8 +89,18 @@ export default function Register() {
                 className="py-2 h-fit w-full"
                 type="primary"
                 htmlType="submit"
+                disabled={loading}
               >
-                Register
+                {loading ? (
+                  <Spin
+                    indicator={
+                      <LoadingOutlined spin style={{ color: "white" }} />
+                    }
+                    size="small"
+                  />
+                ) : (
+                  <p>Register</p>
+                )}
               </Button>
             </Form.Item>
             <div className="flex items-center gap-2">

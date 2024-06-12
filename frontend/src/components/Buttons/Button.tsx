@@ -5,6 +5,7 @@ type ButtonProps = {
   className?: string;
   type?: "default" | "link" | "primary" | "text" | "dashed" | undefined;
   htmlType?: "submit" | "button";
+  disabled?: boolean;
   onClick?: () => void;
 };
 
@@ -13,6 +14,7 @@ export default function Button({
   className = "py-2",
   type = "primary",
   htmlType = "submit",
+  disabled = false,
   onClick = () => {},
 }: ButtonProps) {
   return (
@@ -37,6 +39,7 @@ export default function Button({
         onClick={onClick}
         htmlType={htmlType}
         type={type}
+        disabled={disabled}
       >
         {children}
       </AntButton>

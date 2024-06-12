@@ -7,19 +7,61 @@ import { IoMdLogIn } from "react-icons/io";
 import { GiHamburgerMenu } from "react-icons/gi";
 import "./Sidebar.css";
 import { Drawer } from "antd";
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../../contexts/AuthContext";
+import { useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { DownOutlined } from "@ant-design/icons";
+import { Dropdown, Space } from "antd";
+import type { MenuProps } from "antd";
+import { Link, useNavigate } from "react-router-dom";
+import { authService } from "../../../services/authService";
+import { toast } from "react-toastify";
+import { Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+import { logout } from "../../../features/Slicers/authSlice";
 
 export default function Sidebar() {
+  const naviagte = useNavigate();
+  const dispatch = useAppDispatch();
   const [showDrawer, setShowDrawer] = useState(false);
-  // const { getCurrentUser, isLoggedIn } = useContext(AuthContext);
+  const { userInfo } = useAppSelector((state) => state.auth);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  // useEffect(() => {
-  //   alert("rumaisa");
-  //   if (isLoggedIn) {
-  //     getCurrentUser();
-  //   }
-  // }, [isLoggedIn]);
+  const logoutUser = async () => {
+    setLoading(true);
+    const response = await authService.logout();
+    console.log(response);
+    if (response?.status === 200) {
+      setLoading(false);
+      dispatch(logout());
+      toast.success("Logged out successfully");
+      naviagte("/login");
+    } else {
+      setLoading(false);
+      toast.error(response?.response?.data?.errorMsg);
+    }
+  };
+
+  const items: MenuProps["items"] = [
+    {
+      key: "1",
+      label: <Link to="/profile">Profile</Link>,
+    },
+    {
+      key: "2",
+      label: (
+        <button onClick={logoutUser}>
+          {loading ? (
+            <Spin
+              indicator={<LoadingOutlined spin style={{ color: "white" }} />}
+              size="small"
+            />
+          ) : (
+            <p>Logout</p>
+          )}
+        </button>
+      ),
+    },
+  ];
 
   return (
     <div>
@@ -35,8 +77,9 @@ export default function Sidebar() {
           }}
         />
       </div>
+      {/* */}
       <div
-        className="bg-black hidden z-50 transition ease-linear delay-200 duration-200 text-white w-14 h-[100vh] hover:w-full md:hover:w-40 md:flex flex-col justify-between py-9 pl-4 overflow-hidden"
+        className="bg-black hidden w-14 md:hover:w-40 z-50 hover:w-full transition ease-linear delay-200 duration-200 text-white h-[100vh] md:flex flex-col justify-between py-9 pl-4 overflow-hidden"
         id="nav-container"
       >
         <div className="flex flex-col gap-7">
@@ -46,7 +89,9 @@ export default function Sidebar() {
                 fontSize: "20px",
               }}
             />
-            <p className="font-normal hidden nav-item-name w-full">Home</p>
+            <Link to="/" className="font-normal hidden nav-item-name w-full">
+              Home
+            </Link>
           </div>
           <div className="flex items-center gap-3 cursor-pointer transition ease-in hover:translate-x-2 hover:text-[#EC4899]">
             <FaShoppingBag />
@@ -62,14 +107,27 @@ export default function Sidebar() {
           </div>
         </div>
         <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-3 cursor-pointer transition ease-in hover:translate-x-2 hover:text-[#EC4899]">
-            <IoMdLogIn />
-            <p className="font-normal hidden nav-item-name">Login</p>
-          </div>
-          <div className="flex items-center gap-3 cursor-pointer transition ease-in hover:translate-x-2 hover:text-[#EC4899]">
-            <GoPersonFill />
-            <p className="font-normal hidden nav-item-name">Register</p>
-          </div>
+          {userInfo ? (
+            <Dropdown menu={{ items }} rootClassName="rm-sidebar-dropdown">
+              <a onClick={(e) => e.preventDefault()}>
+                <Space className="text-sm">
+                  {userInfo.username}
+                  <DownOutlined />
+                </Space>
+              </a>
+            </Dropdown>
+          ) : (
+            <>
+              <div className="flex items-center gap-3 cursor-pointer transition ease-in hover:translate-x-2 hover:text-[#EC4899]">
+                <IoMdLogIn />
+                <p className="font-normal hidden nav-item-name">Login</p>
+              </div>
+              <div className="flex items-center gap-3 cursor-pointer transition ease-in hover:translate-x-2 hover:text-[#EC4899]">
+                <GoPersonFill />
+                <p className="font-normal hidden nav-item-name">Register</p>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

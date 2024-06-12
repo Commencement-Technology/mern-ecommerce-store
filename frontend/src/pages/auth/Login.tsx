@@ -1,48 +1,36 @@
 import { Form, Input } from "antd";
 import MainLayout from "../../components/Layouts/MainLayout";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "../../components/Buttons/Button";
 import { FormValues } from "../../types";
-import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
-import { useContext } from "react";
-import { AuthContext } from "../../contexts/AuthContext";
+import { authService } from "../../services/authService";
+import { toast } from "react-toastify";
+import { useState } from "react";
+import { Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+import { useAppDispatch } from "../../hooks";
+import { setCredentials } from "../../features/Slicers/authSlice";
 
 export default function Login() {
-  const { setIsLoggedIn, getCurrentUser } = useContext(AuthContext);
-
-  const onFinish = (values: FormValues) => {
-    console.log(values);
-    axios
-      .post("http://localhost:5001/api/users/login", {
-        email: values.email,
-        password: values.password,
-      })
-      .then(
-        (response) => {
-          if (response.status === 200) {
-            localStorage.setItem("token", response.data.accessToken);
-            setIsLoggedIn(true);
-            toast.success("Logged in successfully");
-            getCurrentUser();
-          }
-        },
-        (error) => {
-          console.log(error);
-          if (error.response && error.response.data && error.response.data) {
-            if (error.response.status === 400) {
-              toast.error(error.response.data.title);
-            } else {
-              toast.error("Oops! Some problem occured! Try again later..");
-            }
-          }
-        }
-      );
+  const dispatch = useAppDispatch();
+  const [loading, setLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const onFinish = async (values: any) => {
+    setLoading(true);
+    const response = await authService.loginUser(values.email, values.password);
+    console.log(response);
+    if (response?.status === 200) {
+      dispatch(setCredentials({ ...response?.data }));
+      setLoading(false);
+      toast.success("Logged in successfully");
+      navigate("/");
+    } else {
+      toast.error(response?.response?.data?.errorMsg);
+      setLoading(false);
+    }
   };
-
   return (
     <MainLayout>
-      <ToastContainer />
       <div className="bg-zinc-900 p-4 h-[100vh] w-full flex justify-between">
         <div className="flex flex-col justify-center items-center text-left w-full px-5 md:w-1/2 md:mx-auto lg:px-0 lg:w-1/2 lg:mx-auto">
           <h1 className="text-white font-bold text-3xl py-3 text-left items-start justify-start">
@@ -86,7 +74,16 @@ export default function Login() {
                 htmlType="submit"
                 className="w-full py-2 h-fit"
               >
-                Login
+                {loading ? (
+                  <Spin
+                    indicator={
+                      <LoadingOutlined spin style={{ color: "white" }} />
+                    }
+                    size="small"
+                  />
+                ) : (
+                  <p>Login</p>
+                )}
               </Button>
             </Form.Item>
             <div className="flex items-center gap-2">
