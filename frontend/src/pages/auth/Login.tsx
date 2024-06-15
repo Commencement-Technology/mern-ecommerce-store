@@ -15,6 +15,7 @@ export default function Login() {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
+
   const onFinish = async (values: any) => {
     setLoading(true);
     const response = await authService.loginUser(values.email, values.password);
@@ -29,6 +30,7 @@ export default function Login() {
       setLoading(false);
     }
   };
+
   return (
     <MainLayout>
       <div className="bg-zinc-900 p-4 h-[100vh] w-full flex justify-between">

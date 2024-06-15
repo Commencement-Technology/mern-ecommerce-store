@@ -8,11 +8,9 @@ export const fetchApi = async (
   headers?: object
 ): Promise<any> => {
   try {
-    const token = localStorage.getItem("token");
     const combinedHeaders = {
       "Content-type": "application/json",
       Accept: "application/json",
-      Authorization: token ? `Bearer ${token}` : "",
       ...headers,
     };
     const response = await axios({
@@ -20,8 +18,9 @@ export const fetchApi = async (
       url: `${BACKEND_URL}${endpoint}`,
       headers: combinedHeaders,
       data: body,
+      // to properly accept cookies from the backend
+      withCredentials: true,
     });
-    console.log(response);
     return response;
   } catch (error) {
     return error;

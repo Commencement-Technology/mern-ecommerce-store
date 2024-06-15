@@ -18,6 +18,9 @@ import { toast } from "react-toastify";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { logout } from "../../../features/Slicers/authSlice";
+import { UserInfo } from "../../../types";
+import { CgProfile } from "react-icons/cg";
+import { IoMdLogOut } from "react-icons/io";
 
 export default function Sidebar() {
   const naviagte = useNavigate();
@@ -65,7 +68,13 @@ export default function Sidebar() {
 
   return (
     <div>
-      <NavigationDrawer showDrawer={showDrawer} setShowDrawer={setShowDrawer} />
+      <NavigationDrawer
+        showDrawer={showDrawer}
+        setShowDrawer={setShowDrawer}
+        userInfo={userInfo}
+        logoutUser={logoutUser}
+        loading={loading}
+      />
       <div
         className="cursor-pointer block md:hidden bg-zinc-900 absolute top-8 left-7"
         onClick={() => setShowDrawer(true)}
@@ -120,11 +129,18 @@ export default function Sidebar() {
             <>
               <div className="flex items-center gap-3 cursor-pointer transition ease-in hover:translate-x-2 hover:text-[#EC4899]">
                 <IoMdLogIn />
-                <p className="font-normal hidden nav-item-name">Login</p>
+                <Link to="/login" className="font-normal hidden nav-item-name">
+                  Login
+                </Link>
               </div>
               <div className="flex items-center gap-3 cursor-pointer transition ease-in hover:translate-x-2 hover:text-[#EC4899]">
                 <GoPersonFill />
-                <p className="font-normal hidden nav-item-name">Register</p>
+                <Link
+                  to="/register"
+                  className="font-normal hidden nav-item-name"
+                >
+                  Register
+                </Link>
               </div>
             </>
           )}
@@ -134,12 +150,21 @@ export default function Sidebar() {
   );
 }
 
-const NavigationDrawer = ({
-  showDrawer,
-  setShowDrawer,
-}: {
+// Defining props for NavigationDrawer
+interface NavigationDrawerProps {
   showDrawer: boolean;
   setShowDrawer: (value: boolean) => void;
+  userInfo: UserInfo | null; // or UserInfo | undefined if userInfo might not be passed at all
+  logoutUser: () => void;
+  loading: boolean;
+}
+
+const NavigationDrawer: React.FC<NavigationDrawerProps> = ({
+  showDrawer,
+  setShowDrawer,
+  userInfo,
+  logoutUser,
+  loading,
 }) => {
   return (
     <Drawer
@@ -149,21 +174,26 @@ const NavigationDrawer = ({
     >
       <div className="flex flex-col items-center gap-3 w-full h-full pb-14">
         <div className="flex flex-col gap-7">
-          <div className="flex items-center gap-5 cursor-pointer transition ease-in hover:translate-x-2">
+          <Link
+            to="/"
+            className="flex items-center gap-5 cursor-pointer transition ease-in hover:translate-x-2"
+          >
             <FaHome
               style={{
                 fontSize: "40px",
               }}
             />
             <p className="font-normal text-lg w-full">Home</p>
-          </div>
+          </Link>
           <div className="flex items-center gap-5 cursor-pointer transition ease-in hover:translate-x-2 ">
             <FaShoppingBag
               style={{
                 fontSize: "25px",
               }}
             />
-            <p className="font-normal text-lg">Shop</p>
+            <Link to="" className="font-normal text-lg">
+              Shop
+            </Link>
           </div>
           <div className="flex items-center gap-5 cursor-pointer transition ease-in hover:translate-x-2 ">
             <FaCartShopping
@@ -181,22 +211,57 @@ const NavigationDrawer = ({
             />
             <p className="font-normal text-lg">Favorites</p>
           </div>
-          <div className="flex items-center gap-5 cursor-pointer transition ease-in hover:translate-x-2 ">
-            <IoMdLogIn
-              style={{
-                fontSize: "25px",
-              }}
-            />
-            <p className="font-normal text-lg">Login</p>
-          </div>
-          <div className="flex items-center gap-5 cursor-pointer transition ease-in hover:translate-x-2 ">
-            <GoPersonFill
-              style={{
-                fontSize: "25px",
-              }}
-            />
-            <p className="font-normal text-lg">Register</p>
-          </div>
+          {userInfo ? (
+            <div className="mt-5 flex flex-col items-center gap-6">
+              <Link
+                to="/profile"
+                className="flex items-center gap-5 cursor-pointer transition ease-in hover:translate-x-2"
+              >
+                <CgProfile style={{ fontSize: "40px" }} />
+                <p className="font-normal text-lg w-full">Profile</p>
+              </Link>
+
+              <button
+                onClick={logoutUser}
+                className="flex items-center gap-4 cursor-pointer"
+              >
+                <IoMdLogOut style={{ fontSize: "40px" }} />
+                {loading ? (
+                  <Spin
+                    indicator={
+                      <LoadingOutlined spin style={{ color: "white" }} />
+                    }
+                    size="small"
+                  />
+                ) : (
+                  <p className="font-normal text-lg w-full">Logout</p>
+                )}
+              </button>
+            </div>
+          ) : (
+            <>
+              <div className="flex items-center gap-5 cursor-pointer transition ease-in hover:translate-x-2 ">
+                <IoMdLogIn
+                  style={{
+                    fontSize: "25px",
+                  }}
+                />
+                <Link to="/login" className="font-normal text-lg">
+                  Login
+                </Link>
+              </div>
+              <div className="flex items-center gap-5 cursor-pointer transition ease-in hover:translate-x-2 ">
+                <GoPersonFill
+                  style={{
+                    fontSize: "25px",
+                  }}
+                />
+                <Link to="/register" className="font-normal text-lg">
+                  Register
+                </Link>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </Drawer>

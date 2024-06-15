@@ -15,6 +15,7 @@ export default function Register() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState<boolean>(false);
+
   const onFinish = async (values: any) => {
     setLoading(true);
     const response = await authService.registerUser(

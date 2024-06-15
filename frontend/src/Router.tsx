@@ -12,6 +12,7 @@ export default function Router() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<UpdateProfile />} />
+        <Route path="*" element={<h1>Page Not Found!!</h1>} />
       </Routes>
     </BrowserRouter>
   );
