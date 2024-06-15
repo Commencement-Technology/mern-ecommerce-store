@@ -7,12 +7,19 @@ const errorHandler = require("./middleware/errorHandler");
 const cookieParser = require("cookie-parser");
 
 // cors
-app.use(cors());
+// credentials are set to true to send cookies from the backend
+app.use(
+  cors({
+    origin: "http://localhost:5000", // Your frontend URL
+    credentials: true,
+  })
+);
 
 // database
 connectDB();
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // routes
