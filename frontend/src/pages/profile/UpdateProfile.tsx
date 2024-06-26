@@ -72,6 +72,7 @@ export default function UpdateProfile() {
               initialValue={userInfo?.username}
             >
               <Input
+                autoComplete="new-username"
                 rootClassName="rm-input-error"
                 className="bg-zinc-900 w-full hover:bg-zinc-900 focus:bg-zinc-900 text-white"
                 placeholder="Enter name"
@@ -88,6 +89,7 @@ export default function UpdateProfile() {
               initialValue={userInfo?.email}
             >
               <Input
+                autoComplete="new-email"
                 rootClassName="rm-input-error"
                 className="bg-zinc-900 w-full active:bg-zinc-900 hover:bg-zinc-900 focus:bg-zinc-900 text-white"
                 placeholder="Enter email"
@@ -101,6 +103,7 @@ export default function UpdateProfile() {
               rules={[{ required: true, message: "This field is required" }]}
             >
               <Input.Password
+                autoComplete="new-password"
                 rootClassName="rm-input-error"
                 className="w-full text-white"
                 placeholder="Enter password"
@@ -117,6 +120,7 @@ export default function UpdateProfile() {
               rules={[{ required: true, message: "This field is required" }]}
             >
               <Input.Password
+                autoComplete="new-password"
                 rootClassName="rm-input-error"
                 className="w-full text-white"
                 placeholder="Enter password"
