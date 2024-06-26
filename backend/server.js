@@ -5,6 +5,8 @@ const cors = require("cors");
 const connectDB = require("./config/connectDB");
 const errorHandler = require("./middleware/errorHandler");
 const cookieParser = require("cookie-parser");
+const uploadRoutes = require("./routes/uploadRoutes");
+const path = require("path");
 
 // cors
 // credentials are set to true to send cookies from the backend
@@ -24,9 +26,14 @@ app.use(cookieParser());
 
 // routes
 app.use("/api/users", require("./routes/userRoutes"));
+app.use("/api/category", require("./routes/categoryRoutes"));
+app.use("/api/products", require("./routes/productRoutes"));
+app.use("/api/upload", uploadRoutes);
 
 // middleware
 app.use(errorHandler);
+
+app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 
 // server
 const PORT = process.env.PORT || 5001;

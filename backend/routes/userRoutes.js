@@ -8,6 +8,7 @@ const {
   getAllUsers,
 } = require("../controllers/userController");
 const validateToken = require("../middleware/validateToken");
+const authorizeAdmin = require("../middleware/authorizeAdmin");
 const router = express.Router();
 
 router.post("/register", registerUser);
@@ -18,7 +19,7 @@ router.post("/logout", logoutUser);
 
 router.get("/current", validateToken, getCurrentUser);
 
-router.get("/all", getAllUsers);
+router.get("/all", validateToken, authorizeAdmin, getAllUsers);
 
 router.put("/update-profile", validateToken, updateUserProfile);
 
