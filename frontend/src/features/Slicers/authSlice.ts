@@ -4,12 +4,14 @@ import { UserInfo } from "../../types";
 
 interface AuthSliceInterface {
   userInfo: UserInfo | null;
+  isAdmin: boolean;
 }
 
 const initialState: AuthSliceInterface = {
   userInfo: localStorage.getItem("userInfo")
     ? JSON.parse(localStorage.getItem("userInfo") as string)
     : null,
+  isAdmin: false,
 };
 
 export const auth = createSlice({
@@ -24,8 +26,11 @@ export const auth = createSlice({
       state.userInfo = null;
       localStorage.clear();
     },
+    setIsAdmin: (state, action: PayloadAction<boolean>) => {
+      state.isAdmin = action.payload;
+    },
   },
 });
 
-export const { setCredentials, logout } = auth.actions;
+export const { setCredentials, logout, setIsAdmin } = auth.actions;
 export default auth.reducer;

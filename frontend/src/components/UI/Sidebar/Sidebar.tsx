@@ -11,7 +11,6 @@ import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { DownOutlined } from "@ant-design/icons";
 import { Dropdown, Space } from "antd";
-import type { MenuProps } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { authService } from "../../../services/authService";
 import { toast } from "react-toastify";
@@ -26,7 +25,7 @@ export default function Sidebar() {
   const naviagte = useNavigate();
   const dispatch = useAppDispatch();
   const [showDrawer, setShowDrawer] = useState(false);
-  const { userInfo } = useAppSelector((state) => state.auth);
+  const { userInfo, isAdmin } = useAppSelector((state) => state.auth);
   const [loading, setLoading] = useState<boolean>(false);
 
   const logoutUser = async () => {
@@ -44,7 +43,7 @@ export default function Sidebar() {
     }
   };
 
-  const items: MenuProps["items"] = [
+  const commonItems = [
     {
       key: "1",
       label: <Link to="/profile">Profile</Link>,
@@ -52,7 +51,10 @@ export default function Sidebar() {
     {
       key: "2",
       label: (
-        <button onClick={logoutUser}>
+        <button
+          onClick={logoutUser}
+          style={{ border: "none", background: "none", padding: 0 }}
+        >
           {loading ? (
             <Spin
               indicator={<LoadingOutlined spin style={{ color: "white" }} />}
@@ -66,6 +68,27 @@ export default function Sidebar() {
     },
   ];
 
+  const adminItems = [
+    {
+      key: "3",
+      label: <Link to="/users">Users</Link>,
+    },
+    {
+      key: "4",
+      label: <Link to="/orders">Orders</Link>,
+    },
+    {
+      key: "5",
+      label: <Link to="/category">Category</Link>,
+    },
+    {
+      key: "6",
+      label: <Link to="/products">Products</Link>,
+    },
+  ];
+
+  const items = isAdmin ? [...commonItems, ...adminItems] : commonItems;
+
   return (
     <div>
       <NavigationDrawer
@@ -74,6 +97,7 @@ export default function Sidebar() {
         userInfo={userInfo}
         logoutUser={logoutUser}
         loading={loading}
+        isAdmin={isAdmin}
       />
       <div
         className="cursor-pointer block md:hidden bg-zinc-900 absolute top-8 left-7"
@@ -157,6 +181,7 @@ interface NavigationDrawerProps {
   userInfo: UserInfo | null; // or UserInfo | undefined if userInfo might not be passed at all
   logoutUser: () => void;
   loading: boolean;
+  isAdmin: boolean;
 }
 
 const NavigationDrawer: React.FC<NavigationDrawerProps> = ({
@@ -165,6 +190,7 @@ const NavigationDrawer: React.FC<NavigationDrawerProps> = ({
   userInfo,
   logoutUser,
   loading,
+  isAdmin,
 }) => {
   return (
     <Drawer
@@ -213,30 +239,89 @@ const NavigationDrawer: React.FC<NavigationDrawerProps> = ({
           </div>
           {userInfo ? (
             <div className="mt-5 flex flex-col items-center gap-6">
-              <Link
-                to="/profile"
-                className="flex items-center gap-5 cursor-pointer transition ease-in hover:translate-x-2"
-              >
-                <CgProfile style={{ fontSize: "40px" }} />
-                <p className="font-normal text-lg w-full">Profile</p>
-              </Link>
-
-              <button
-                onClick={logoutUser}
-                className="flex items-center gap-4 cursor-pointer"
-              >
-                <IoMdLogOut style={{ fontSize: "40px" }} />
-                {loading ? (
-                  <Spin
-                    indicator={
-                      <LoadingOutlined spin style={{ color: "white" }} />
-                    }
-                    size="small"
-                  />
+              <>
+                {isAdmin ? (
+                  <>
+                    <Link
+                      to="/profile"
+                      className="flex items-center gap-5 cursor-pointer transition ease-in hover:translate-x-2"
+                    >
+                      <CgProfile style={{ fontSize: "40px" }} />
+                      <p className="font-normal text-lg w-full">Profile</p>
+                    </Link>
+                    <button
+                      onClick={logoutUser}
+                      className="flex items-center gap-4 cursor-pointer"
+                    >
+                      <IoMdLogOut style={{ fontSize: "40px" }} />
+                      {loading ? (
+                        <Spin
+                          indicator={
+                            <LoadingOutlined spin style={{ color: "white" }} />
+                          }
+                          size="small"
+                        />
+                      ) : (
+                        <p className="font-normal text-lg w-full">Logout</p>
+                      )}
+                    </button>
+                  </>
                 ) : (
-                  <p className="font-normal text-lg w-full">Logout</p>
+                  <>
+                    <Link
+                      to="/profile"
+                      className="flex items-center hover:text-white gap-5 cursor-pointer transition ease-in hover:translate-x-2"
+                    >
+                      <CgProfile style={{ fontSize: "40px" }} />
+                      <p className="font-normal text-lg w-full">Profile</p>
+                    </Link>
+                    <Link
+                      to="/users"
+                      className="flex items-center gap-5 cursor-pointer transition ease-in hover:translate-x-2"
+                    >
+                      <CgProfile style={{ fontSize: "40px" }} />
+                      <p className="font-normal text-lg w-full">Users</p>
+                    </Link>
+                    <Link
+                      to="/orders"
+                      className="flex items-center gap-5 cursor-pointer transition ease-in hover:translate-x-2"
+                    >
+                      <CgProfile style={{ fontSize: "40px" }} />
+                      <p className="font-normal text-lg w-full">Orders</p>
+                    </Link>
+                    <Link
+                      to="/category"
+                      className="flex items-center gap-5 cursor-pointer transition ease-in hover:translate-x-2"
+                    >
+                      <CgProfile style={{ fontSize: "40px" }} />
+                      <p className="font-normal text-lg w-full">Category</p>
+                    </Link>
+                    <Link
+                      to="/products"
+                      className="flex items-center gap-5 cursor-pointer transition ease-in hover:translate-x-2"
+                    >
+                      <CgProfile style={{ fontSize: "40px" }} />
+                      <p className="font-normal text-lg w-full">Products</p>
+                    </Link>
+                    <button
+                      onClick={logoutUser}
+                      className="flex items-center gap-4 cursor-pointer"
+                    >
+                      <IoMdLogOut style={{ fontSize: "40px" }} />
+                      {loading ? (
+                        <Spin
+                          indicator={
+                            <LoadingOutlined spin style={{ color: "white" }} />
+                          }
+                          size="small"
+                        />
+                      ) : (
+                        <p className="font-normal text-lg w-full">Logout</p>
+                      )}
+                    </button>
+                  </>
                 )}
-              </button>
+              </>
             </div>
           ) : (
             <>

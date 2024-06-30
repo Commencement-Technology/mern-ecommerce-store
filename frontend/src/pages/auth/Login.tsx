@@ -9,7 +9,7 @@ import { useState } from "react";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { useAppDispatch } from "../../hooks";
-import { setCredentials } from "../../features/Slicers/authSlice";
+import { setCredentials, setIsAdmin } from "../../features/Slicers/authSlice";
 
 export default function Login() {
   const dispatch = useAppDispatch();
@@ -22,6 +22,7 @@ export default function Login() {
     console.log(response);
     if (response?.status === 200) {
       dispatch(setCredentials({ ...response?.data }));
+      dispatch(setIsAdmin(response?.data?.isAdmin));
       setLoading(false);
       toast.success("Logged in successfully");
       navigate("/");

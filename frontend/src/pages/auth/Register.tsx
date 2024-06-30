@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { useAppDispatch } from "../../hooks";
-import { setCredentials } from "../../features/Slicers/authSlice";
+import { setCredentials, setIsAdmin } from "../../features/Slicers/authSlice";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -26,6 +26,7 @@ export default function Register() {
     console.log(response);
     if (response?.status === 201) {
       dispatch(setCredentials({ ...response?.data }));
+      dispatch(setIsAdmin(response?.data?.isAdmin));
       setLoading(false);
       toast.success("User successfully registered.");
       navigate("/");
