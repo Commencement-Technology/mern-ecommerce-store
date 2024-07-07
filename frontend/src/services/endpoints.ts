@@ -8,4 +8,5 @@ export const HTTP_METHODS = {
 export const endpoints = {
   USERS: "users/",
   PRODUCTS: "products/",
+  CATEGORY: "category/",
 };

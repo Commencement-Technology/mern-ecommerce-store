@@ -20,6 +20,10 @@ import { logout } from "../../../features/Slicers/authSlice";
 import { UserInfo } from "../../../types";
 import { CgProfile } from "react-icons/cg";
 import { IoMdLogOut } from "react-icons/io";
+import { FaUsers } from "react-icons/fa";
+import { BsInboxesFill } from "react-icons/bs";
+import { MdCategory } from "react-icons/md";
+import { MdOutlineProductionQuantityLimits } from "react-icons/md";
 
 export default function Sidebar() {
   const naviagte = useNavigate();
@@ -241,14 +245,46 @@ const NavigationDrawer: React.FC<NavigationDrawerProps> = ({
             <div className="mt-5 flex flex-col items-center gap-6">
               <>
                 {isAdmin ? (
-                  <>
-                    <Link
-                      to="/profile"
-                      className="flex items-center gap-5 cursor-pointer transition ease-in hover:translate-x-2"
-                    >
-                      <CgProfile style={{ fontSize: "40px" }} />
-                      <p className="font-normal text-lg w-full">Profile</p>
-                    </Link>
+                  <div className="flex flex-col items-start justify-between gap-24">
+                    <div className="flex flex-col items-start gap-3">
+                      <Link
+                        to="/profile"
+                        className="flex items-center hover:text-white gap-5 cursor-pointer transition ease-in hover:translate-x-2"
+                      >
+                        <CgProfile style={{ fontSize: "40px" }} />
+                        <p className="font-normal text-lg w-full">Profile</p>
+                      </Link>
+                      <Link
+                        to="/users"
+                        className="flex items-center gap-5 cursor-pointer transition ease-in hover:translate-x-2"
+                      >
+                        <FaUsers style={{ fontSize: "40px" }} />
+                        <p className="font-normal text-lg w-full">Users</p>
+                      </Link>
+                      <Link
+                        to="/orders"
+                        className="flex items-center gap-5 cursor-pointer transition ease-in hover:translate-x-2"
+                      >
+                        <BsInboxesFill style={{ fontSize: "40px" }} />
+                        <p className="font-normal text-lg w-full">Orders</p>
+                      </Link>
+                      <Link
+                        to="/category"
+                        className="flex items-center gap-5 cursor-pointer transition ease-in hover:translate-x-2"
+                      >
+                        <MdCategory style={{ fontSize: "40px" }} />
+                        <p className="font-normal text-lg w-full">Category</p>
+                      </Link>
+                      <Link
+                        to="/products"
+                        className="flex items-center gap-5 cursor-pointer transition ease-in hover:translate-x-2"
+                      >
+                        <MdOutlineProductionQuantityLimits
+                          style={{ fontSize: "40px" }}
+                        />
+                        <p className="font-normal text-lg w-full">Products</p>
+                      </Link>
+                    </div>
                     <button
                       onClick={logoutUser}
                       className="flex items-center gap-4 cursor-pointer"
@@ -265,43 +301,15 @@ const NavigationDrawer: React.FC<NavigationDrawerProps> = ({
                         <p className="font-normal text-lg w-full">Logout</p>
                       )}
                     </button>
-                  </>
+                  </div>
                 ) : (
                   <>
                     <Link
                       to="/profile"
-                      className="flex items-center hover:text-white gap-5 cursor-pointer transition ease-in hover:translate-x-2"
+                      className="flex items-center gap-5 cursor-pointer transition ease-in hover:translate-x-2"
                     >
                       <CgProfile style={{ fontSize: "40px" }} />
                       <p className="font-normal text-lg w-full">Profile</p>
-                    </Link>
-                    <Link
-                      to="/users"
-                      className="flex items-center gap-5 cursor-pointer transition ease-in hover:translate-x-2"
-                    >
-                      <CgProfile style={{ fontSize: "40px" }} />
-                      <p className="font-normal text-lg w-full">Users</p>
-                    </Link>
-                    <Link
-                      to="/orders"
-                      className="flex items-center gap-5 cursor-pointer transition ease-in hover:translate-x-2"
-                    >
-                      <CgProfile style={{ fontSize: "40px" }} />
-                      <p className="font-normal text-lg w-full">Orders</p>
-                    </Link>
-                    <Link
-                      to="/category"
-                      className="flex items-center gap-5 cursor-pointer transition ease-in hover:translate-x-2"
-                    >
-                      <CgProfile style={{ fontSize: "40px" }} />
-                      <p className="font-normal text-lg w-full">Category</p>
-                    </Link>
-                    <Link
-                      to="/products"
-                      className="flex items-center gap-5 cursor-pointer transition ease-in hover:translate-x-2"
-                    >
-                      <CgProfile style={{ fontSize: "40px" }} />
-                      <p className="font-normal text-lg w-full">Products</p>
                     </Link>
                     <button
                       onClick={logoutUser}

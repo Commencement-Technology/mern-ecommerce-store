@@ -34,3 +34,48 @@
 .rm-login-input-error {
   background-color: #18181b !important;
 }
+
+.rm-category-input .ant-input-outlined {
+  background-color: #18181b !important;
+  color: white !important;
+}
+
+.ant-select-selection-placeholder {
+  color: white !important;
+}
+
+.rm-category-modal .ant-modal-content {
+  width: 60% !important;
+  margin: 0 auto 0 auto;
+  background-color: rgb(28, 27, 27) !important;
+}
+
+.rm-category-modal .ant-modal-content .ant-modal-close {
+  color: white !important;
+}
+
+.rm-category-modal-input {
+  background-color: black !important;
+  color: white !important;
+}
+
+.rm-category-modal-input .ant-input-outlined:focus,
+.rm-category-modal-input .ant-input-outlined:focus-within,
+.rm-category-modal-input .ant-input-outlined:active,
+.rm-category-modal-input .ant-input-outlined:hover,
+.rm-category-modal-input .ant-input-outlined:visited {
+  background-color: black !important;
+  color: white !important;
+}
+
+.rm-category-modal .ant-modal-footer {
+  display: none;
+}
+
+.rm-category-delete-btn {
+  background-color: rgb(233, 117, 74);
+}
+
+.rm-category-delete-btn:hover {
+  background-color: #ff8b3d !important;
+}

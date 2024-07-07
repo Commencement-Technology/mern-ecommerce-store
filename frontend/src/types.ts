@@ -9,3 +9,12 @@ export interface UserInfo {
   username: string;
   email: string;
 }
+
+export interface IApiResponse {
+  status: number;
+  response?: {
+    data?: {
+      error?: string;
+    };
+  };
+}
