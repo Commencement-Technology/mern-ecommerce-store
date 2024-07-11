@@ -4,7 +4,6 @@ const express = require("express");
 
 const router = express.Router();
 const uploadsPath = path.join(__dirname, "../../uploads");
-console.log(uploadsPath);
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

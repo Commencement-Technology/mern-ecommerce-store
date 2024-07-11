@@ -4,14 +4,15 @@ const validateToken = require("../middleware/validateToken");
 const {
   addProduct,
   updateProductDetails,
-  getProduct,
-  getAllProducts,
+  fetchProductById,
+  fetchProducts,
   removeProduct,
   addProductReview,
   fetchTopProducts,
   fetchNewProducts,
 } = require("../controllers/productController");
 const authorizeAdmin = require("../middleware/authorizeAdmin");
+const checkId = require("../middleware/checkId");
 
 const router = express.Router();
 
@@ -21,11 +22,9 @@ router.get("/new", fetchNewProducts);
 router
   .route("/:id")
   .put(validateToken, authorizeAdmin, formidable(), updateProductDetails)
-  .get(validateToken, authorizeAdmin, getProduct)
+  .get(validateToken, authorizeAdmin, fetchProductById)
   .delete(validateToken, authorizeAdmin, removeProduct);
-router.get("/", validateToken, authorizeAdmin, getAllProducts);
-router
-  .route("/:id/reviews")
-  .post(validateToken, authorizeAdmin, addProductReview);
+router.get("/", validateToken, authorizeAdmin, fetchProducts);
+router.route("/:id/reviews").post(validateToken, checkId, addProductReview);
 
 module.exports = router;
