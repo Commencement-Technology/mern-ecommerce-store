@@ -1,0 +1,4 @@
+display the product image 
+
+product management 
+edit and delete UI + api 

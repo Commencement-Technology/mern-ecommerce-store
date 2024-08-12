@@ -5,11 +5,10 @@ import Button from "../../components/Buttons/Button";
 import { FormValues } from "../../types";
 import { authService } from "../../services/authService";
 import { useState } from "react";
-import { toast } from "react-toastify";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { useAppDispatch } from "../../hooks";
-import { setCredentials, setIsAdmin } from "../../features/Slicers/authSlice";
+import { handleApiResponse } from "../../services/utils";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -18,22 +17,19 @@ export default function Register() {
 
   const onFinish = async (values: any) => {
     setLoading(true);
-    const response = await authService.registerUser(
-      values.username,
-      values.email,
-      values.password
-    );
+    const { username, email, password } = values;
+    const response = await authService.registerUser(username, email, password);
     console.log(response);
-    if (response?.status === 201) {
-      dispatch(setCredentials({ ...response?.data }));
-      dispatch(setIsAdmin(response?.data?.isAdmin));
-      setLoading(false);
-      toast.success("User successfully registered.");
-      navigate("/");
-    } else {
-      toast.error(response?.response?.data?.errorMsg);
-      setLoading(false);
-    }
+    handleApiResponse(
+      response,
+      "Registeration failed",
+      "User successfully registered",
+      true,
+      setLoading,
+      dispatch,
+      () => navigate("/"),
+      () => console.error("Registration error")
+    );
   };
 
   return (
@@ -107,7 +103,7 @@ export default function Register() {
             </Form.Item>
             <div className="flex items-center gap-2">
               <p className="text-white">Already have an account?</p>
-              <Link to="/login" className="text-pink-500 hover:text-pink-500">
+              <Link to="/login" className="text-pink hover:text-pink">
                 Login
               </Link>
             </div>

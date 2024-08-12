@@ -63,7 +63,9 @@
 .rm-category-modal-input .ant-input-outlined:focus-within,
 .rm-category-modal-input .ant-input-outlined:active,
 .rm-category-modal-input .ant-input-outlined:hover,
-.rm-category-modal-input .ant-input-outlined:visited {
+.rm-category-modal-input .ant-input-outlined:visited,
+.rm-form-input .ant-input-outlined,
+.rm-categories-select .ant-select-selector {
   background-color: black !important;
   color: white !important;
 }
@@ -78,4 +80,43 @@
 
 .rm-category-delete-btn:hover {
   background-color: #ff8b3d !important;
+}
+
+.rm-upload-product-img .ant-upload-list .ant-upload-select {
+  width: 100% !important;
+}
+
+.rm-categories-select .ant-select-arrow {
+  color: white !important;
+}
+
+.rm-upload-product-img .ant-upload-list-item-container {
+  width: 100% !important;
+  height: 200px !important;
+}
+
+.rm-input-number-btn .ant-input-number-input {
+  background: black !important;
+  color: white !important;
+  height: 45px !important;
+}
+
+.rm-product-pagination .ant-pagination-item-link {
+  color: #ec4899 !important;
+}
+
+.rm-product-pagination .ant-pagination-item {
+  color: #ec4899; /* Pink color for all items */
+}
+
+.rm-product-pagination .ant-pagination-item a {
+  color: #ec4899; /* Ensure unselected items have pink color */
+}
+
+.rm-product-pagination .ant-pagination-item-active {
+  background-color: #ec4899; /* Pink background for the active item */
+}
+
+.rm-product-pagination .ant-pagination-item-active a {
+  color: black; /* Black color for the active item */
 }

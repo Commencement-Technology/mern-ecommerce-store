@@ -1,20 +1,40 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+// public routes
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Home from "./pages/home/Home";
+// private routes
 import UpdateProfile from "./pages/profile/UpdateProfile";
+// admin routes
+import { AddProduct } from "./pages/admin/AddProduct";
 import { Category } from "./pages/categories/Category";
+import { ProductList } from "./pages/admin/ProductList";
+// routes
+import { PrivateRoute } from "./components/Routes/PrivateRoute";
+import { AdminRoute } from "./pages/admin/AdminRoute";
+import { PageNotFound } from "./pages/PageNotFound";
 
 export default function Router() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
+        {/* can be accessed by anyone */}
+        <Route index={true} path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/profile" element={<UpdateProfile />} />
-        <Route path="/categories" element={<Category />} />
-        <Route path="*" element={<h1>Page Not Found!!</h1>} />
+
+        {/* can be accessed by registered users only */}
+        <Route path="" element={<PrivateRoute />}>
+          <Route path="/profile" element={<UpdateProfile />} />
+        </Route>
+
+        <Route path="/admin" element={<AdminRoute />}>
+          <Route path="add-product" element={<AddProduct />} />
+          <Route path="categories" element={<Category />} />
+          <Route path="product-list" element={<ProductList />} />
+        </Route>
+
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
     </BrowserRouter>
   );

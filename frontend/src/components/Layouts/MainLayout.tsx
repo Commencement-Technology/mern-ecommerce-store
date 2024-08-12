@@ -9,7 +9,7 @@ export default function MainLayout({
   return (
     <div className="flex w-full h-[100vh]">
       <Sidebar />
-      <div className="w-full">{children}</div>
+      <div className="w-full h-full overflow-y-auto">{children}</div>
     </div>
   );
 }

@@ -8,8 +8,8 @@ import { userService } from "../../services/userService";
 import { useState } from "react";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-import { setCredentials } from "../../features/Slicers/authSlice";
 import { useNavigate } from "react-router-dom";
+import { handleApiResponse } from "../../services/utils";
 
 export default function UpdateProfile() {
   const navigate = useNavigate();
@@ -17,8 +17,10 @@ export default function UpdateProfile() {
   const dispatch = useAppDispatch();
   const { userInfo } = useAppSelector((state) => state.auth);
   const [loading, setLoading] = useState<boolean>(false);
+
   const onFinish = async (values: any) => {
     console.log(values);
+    const { username, email, password } = values;
     if (values.password !== values.confirmPassword) {
       toast.error("Passwords do not match");
     } else {
@@ -26,27 +28,28 @@ export default function UpdateProfile() {
       if (userInfo) {
         const response = await userService.updateUserProfile(
           userInfo._id,
-          values.username,
-          values.email,
-          values.password
+          username,
+          email,
+          password
         );
         console.log(response);
-        if (response?.status === 200) {
-          dispatch(setCredentials({ ...response?.data }));
-          setLoading(false);
-          console.log(userInfo.email, userInfo.username);
-          toast.success("Profile updated successfully");
-          form.resetFields();
-        } else {
-          if (response?.response?.status === 401) {
-            setLoading(false);
-            toast.error("Unauthorized...Please login first..");
-            navigate("/login");
-          } else if (response?.status !== 401) {
-            setLoading(false);
-            toast.error(response?.response?.data?.errorMsg);
+        handleApiResponse(
+          response,
+          "Unauthorized...Please login first..",
+          "Profile updated successfully",
+          true,
+          setLoading,
+          dispatch,
+          () => {
+            form.resetFields();
+          },
+          () => {
+            if (response?.response?.status === 401) {
+              toast.error("Unauthorized...Please login first..");
+              navigate("/login");
+            }
           }
-        }
+        );
       }
     }
   };

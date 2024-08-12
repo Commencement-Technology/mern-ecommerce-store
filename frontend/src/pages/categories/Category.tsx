@@ -6,12 +6,7 @@ import { categoryService } from "../../services/categoryService";
 import { toast } from "react-toastify";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-import { IApiResponse } from "../../types";
-
-interface ICategory {
-  _id: string;
-  name: string;
-}
+import { IApiResponse, ICategory } from "../../types";
 
 export const Category = () => {
   const [categories, setCategories] = useState<ICategory[]>([]);

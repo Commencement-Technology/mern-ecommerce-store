@@ -7,6 +7,9 @@ module.exports = {
         pink: "#EC4899",
         orange: "",
       },
+      letterSpacing: {
+        "extra-wide": ".25em", // Custom value
+      },
     },
   },
   plugins: [],

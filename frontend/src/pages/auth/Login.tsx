@@ -4,12 +4,11 @@ import { Link, useNavigate } from "react-router-dom";
 import Button from "../../components/Buttons/Button";
 import { FormValues } from "../../types";
 import { authService } from "../../services/authService";
-import { toast } from "react-toastify";
 import { useState } from "react";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { useAppDispatch } from "../../hooks";
-import { setCredentials, setIsAdmin } from "../../features/Slicers/authSlice";
+import { handleApiResponse } from "../../services/utils";
 
 export default function Login() {
   const dispatch = useAppDispatch();
@@ -20,16 +19,16 @@ export default function Login() {
     setLoading(true);
     const response = await authService.loginUser(values.email, values.password);
     console.log(response);
-    if (response?.status === 200) {
-      dispatch(setCredentials({ ...response?.data }));
-      dispatch(setIsAdmin(response?.data?.isAdmin));
-      setLoading(false);
-      toast.success("Logged in successfully");
-      navigate("/");
-    } else {
-      toast.error(response?.response?.data?.errorMsg);
-      setLoading(false);
-    }
+    handleApiResponse(
+      response,
+      "Login failed",
+      "Logged in successfully",
+      true,
+      setLoading,
+      dispatch,
+      () => navigate("/"),
+      () => console.error("Login error")
+    );
   };
 
   return (
@@ -91,10 +90,7 @@ export default function Login() {
             </Form.Item>
             <div className="flex items-center gap-2">
               <p className="text-white">New Customer?</p>
-              <Link
-                to="/register"
-                className="text-pink-500 hover:text-pink-500"
-              >
+              <Link to="/register" className="text-pink hover:text-pink">
                 Register
               </Link>
             </div>
