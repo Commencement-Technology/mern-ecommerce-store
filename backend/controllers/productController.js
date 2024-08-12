@@ -23,7 +23,7 @@ const addProduct = asyncHandler(async (req, res) => {
 
     const product = new Product({ ...req.fields });
     await product.save();
-    res.json(product);
+    res.status(200).json(product);
   } catch (error) {
     console.error(error);
     res.status(400).json(error.message);
@@ -77,7 +77,9 @@ const removeProduct = asyncHandler(async (req, res) => {
 
 const fetchProducts = asyncHandler(async (req, res) => {
   try {
-    const pageSize = 6;
+    // by default give 3 products per page 
+    const pageSize = Number(req.query.pageSize) || 3;
+    const page = Number(req.query.page) || 1;
 
     const keyword = req.query.keyword
       ? {
@@ -89,13 +91,15 @@ const fetchProducts = asyncHandler(async (req, res) => {
       : {};
 
     const count = await Product.countDocuments({ ...keyword });
-    const products = await Product.find({ ...keyword }).limit(pageSize);
+    const products = await Product.find({ ...keyword })
+      .limit(pageSize)
+      .skip(pageSize * (page - 1));
 
     res.json({
       products,
-      page: 1,
+      page,
       pages: Math.ceil(count / pageSize),
-      hasMore: false,
+      hasMore: page < Math.ceil(count / pageSize),
     });
   } catch (error) {
     console.error(error);
