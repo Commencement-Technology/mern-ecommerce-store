@@ -1,4 +1,18 @@
-display the product image 
+Home 
+top products 
+carousel -> top products 
+special products -> hearticon -> click -> favorites me add -> deselect bhi ho sakti hongi wahin se 
+on click of special product show the product page 
 
-product management 
-edit and delete UI + api 
+shop page -> filtering options 
+
+general fixes 
+display the sidebar 
+
+additions
+add the ham burger for admin pages 
+
+Admin side remaining work 
+users page 
+orders page 
+

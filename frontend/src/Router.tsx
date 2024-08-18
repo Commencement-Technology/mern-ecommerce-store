@@ -9,6 +9,7 @@ import UpdateProfile from "./pages/profile/UpdateProfile";
 import { AddProduct } from "./pages/admin/AddProduct";
 import { Category } from "./pages/categories/Category";
 import { ProductList } from "./pages/admin/ProductList";
+import { UpdateProduct } from "./pages/admin/UpdateProduct";
 // routes
 import { PrivateRoute } from "./components/Routes/PrivateRoute";
 import { AdminRoute } from "./pages/admin/AdminRoute";
@@ -32,6 +33,7 @@ export default function Router() {
           <Route path="add-product" element={<AddProduct />} />
           <Route path="categories" element={<Category />} />
           <Route path="product-list" element={<ProductList />} />
+          <Route path="update-product/:id" element={<UpdateProduct />} />
         </Route>
 
         <Route path="*" element={<PageNotFound />} />

@@ -30,10 +30,43 @@ export const productService = {
     }
   },
 
-  // deleteProduct: async () => {
-  //   try {
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // },
+  getProductById: async (id: string) => {
+    try {
+      const res = await fetchApi(
+        endpoints.PRODUCTS + `/${id}`,
+        HTTP_METHODS.GET
+      );
+      return res;
+    } catch (error) {
+      console.error(`An error occured while fetching the product ${error}`);
+    }
+  },
+
+  updateProductDetails: async (body: any, id: string): Promise<any> => {
+    try {
+      const headers: { [key: string]: string } = {};
+      headers["Content-Type"] = "multipart/form-data";
+      const res = await fetchApi(
+        endpoints.PRODUCTS + `${id}`,
+        HTTP_METHODS.PUT,
+        body,
+        headers
+      );
+      return res;
+    } catch (error) {
+      console.error(`Failed to update product, ${error}`);
+    }
+  },
+
+  deleteProduct: async (id: string): Promise<any> => {
+    try {
+      const res = await fetchApi(
+        endpoints.PRODUCTS + `delete/${id}`,
+        HTTP_METHODS.DELETE
+      );
+      return res;
+    } catch (error) {
+      console.error(`Failed to delete product, ${error}`);
+    }
+  },
 };

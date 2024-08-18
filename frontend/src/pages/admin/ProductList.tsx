@@ -5,7 +5,7 @@ import { FaArrowRightLong } from "react-icons/fa6";
 import { productService } from "../../services/productService";
 import { Products } from "../../types";
 import { Pagination } from "antd";
-import MyImage from "../../assets/images/image-1723300089116.jpg";
+import { useNavigate } from "react-router-dom";
 
 export const ProductList = () => {
   const [products, setProducts] = useState<Products[]>([]);
@@ -14,7 +14,7 @@ export const ProductList = () => {
 
   useEffect(() => {
     fetchProducts(page, 3);
-  }, []);
+  }, [page]);
 
   const fetchProducts = async (page: number, pageSize: number) => {
     const res = await productService.getAllProducts(page, pageSize);
@@ -88,14 +88,15 @@ const Product = ({
   price: number;
   image: any;
 }) => {
+  const navigate = useNavigate();
+  const handleClick = (id: string) => {
+    navigate(`/admin/update-product/${id}`);
+  };
   return (
     <div className="flex flex-col lg:flex-row gap-9">
-      <div>
-        <img
-          src={MyImage}
-          alt="product"
-          className="lg:h-[230px] lg:w-[800px] w-11/12 mx-auto"
-        />
+      {/* lg:h-[230px] lg:w-[800px]  */}
+      <div className="w-11/12 mx-auto">
+        <img src={image} alt="product" className="w-full" />
       </div>
       <div className="flex flex-col gap-5 lg:gap-8 w-11/12 mx-auto lg:w-full lg:mx-0">
         <div className="text-white flex flex-col gap-1 lg:gap-3 lg:flex-row lg:justify-between">
@@ -106,7 +107,10 @@ const Product = ({
           <p className="text-sm text-gray-500 lg:max-w-4xl max-w-md">
             {description}
           </p>
-          <Button className="flex items-center gap-2 w-40 py-5 mt-6">
+          <Button
+            className="flex items-center gap-2 w-40 py-5 mt-6"
+            onClick={() => handleClick(id)}
+          >
             <p>Update Product </p>
             <FaArrowRightLong />
           </Button>
