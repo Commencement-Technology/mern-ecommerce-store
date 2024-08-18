@@ -1,50 +1,48 @@
 const path = require("path");
 const multer = require("multer");
 const express = require("express");
+const { uploadImage } = require("../utils/upload");
 
 const router = express.Router();
-const uploadsPath = path.join(__dirname, "../../uploads");
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadsPath);
-  },
+const uploader = multer({
+  storage: multer.diskStorage({}),
+  fileFilter: (req, file, cb) => {
+    const filetypes = /jpe?g|png|webp/;
+    const mimetype = file.mimetype;
+    const extname = path.extname(file.originalname).toLowerCase();
 
-  filename: (req, file, cb) => {
-    const extname = path.extname(file.originalname);
-    console.log(file.fieldname);
-    cb(null, `${file.fieldname}-${Date.now()}${extname}`);
+    if (filetypes.test(extname) && filetypes.test(mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Images only!", false));
+    }
   },
 });
 
-const fileFilter = (req, file, cb) => {
-  const filetypes = /jpe?g|png|webp/;
-  const mimetypes = /image\/jpe?g|image\/png|image\/webp/;
-
-  const extname = path.extname(file.originalname).toLowerCase();
-  const mimetype = file.mimetype;
-
-  if (filetypes.test(extname) && mimetypes.test(mimetype)) {
-    cb(null, true);
-  } else {
-    cb(new Error("Images only"), false);
-  }
-};
-
-const upload = multer({ storage, fileFilter });
-const uploadSingleImage = upload.single("image");
+const uploadSingleImage = uploader.single("image");
 
 router.post("/", (req, res) => {
-  uploadSingleImage(req, res, (err) => {
+  uploadSingleImage(req, res, async (err) => {
     if (err) {
-      res.status(400).send({ message: err.message });
-    } else if (req.file) {
-      res.status(200).send({
-        message: "Image uploaded successfully",
-        image: `/${req.file.path}`,
-      });
+      return res.status(400).send({ message: err.message });
+    }
+
+    if (req.file) {
+      try {
+        const result = await uploadImage(req.file.path);
+        res.status(200).send({
+          message: "Image uploaded succesfully",
+          image: result.secure_url,
+        });
+      } catch (error) {
+        res.status(500).send({
+          message: "Failed to upload image to cloudinary",
+          error: error.message,
+        });
+      }
     } else {
-      res.status(400).send({ message: "No image file provided" });
+      res.status(400).send({ message: "No image file provided!" });
     }
   });
 });

@@ -33,8 +33,6 @@ app.use("/api/upload", uploadRoutes);
 // middleware
 app.use(errorHandler);
 
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
 // server
 const PORT = process.env.PORT || 5001;
 

@@ -25,7 +25,9 @@ router.get("/new", fetchNewProducts);
 router
   .route("/:id")
   .put(validateToken, authorizeAdmin, formidable(), updateProductDetails)
-  .get(validateToken, authorizeAdmin, fetchProductById)
+  .get(validateToken, authorizeAdmin, fetchProductById);
+router
+  .route("/delete/:id")
   .delete(validateToken, authorizeAdmin, removeProduct);
 router.get("/", validateToken, authorizeAdmin, fetchProducts);
 // user route

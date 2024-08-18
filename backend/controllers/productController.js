@@ -58,7 +58,7 @@ const updateProductDetails = asyncHandler(async (req, res) => {
 
     await product.save();
 
-    res.json(product);
+    res.status(200).json(product);
   } catch (error) {
     console.error(error);
     res.status(400).json(error.message);
@@ -68,7 +68,7 @@ const updateProductDetails = asyncHandler(async (req, res) => {
 const removeProduct = asyncHandler(async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
-    res.json(product);
+    res.status(200).json(product);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Server error" });
@@ -77,7 +77,7 @@ const removeProduct = asyncHandler(async (req, res) => {
 
 const fetchProducts = asyncHandler(async (req, res) => {
   try {
-    // by default give 3 products per page 
+    // by default give 3 products per page
     const pageSize = Number(req.query.pageSize) || 3;
     const page = Number(req.query.page) || 1;
 
@@ -111,7 +111,7 @@ const fetchProductById = asyncHandler(async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     if (product) {
-      return res.json(product);
+      return res.status(200).json(product);
     } else {
       res.status(404);
       throw new Error("Product not found");
