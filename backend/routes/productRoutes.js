@@ -10,6 +10,7 @@ const {
   addProductReview,
   fetchTopProducts,
   fetchNewProducts,
+  fetchAllProducts,
 } = require("../controllers/productController");
 const authorizeAdmin = require("../middleware/authorizeAdmin");
 const checkId = require("../middleware/checkId");
@@ -21,6 +22,7 @@ router.post("/add", validateToken, authorizeAdmin, formidable(), addProduct);
 // user routes
 router.get("/top", fetchTopProducts);
 router.get("/new", fetchNewProducts);
+router.get("/all-products", fetchAllProducts);
 // admin routes
 router
   .route("/:id")
