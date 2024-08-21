@@ -1,18 +1,15 @@
-Home 
-top products 
-carousel -> top products 
-special products -> hearticon -> click -> favorites me add -> deselect bhi ho sakti hongi wahin se 
-on click of special product show the product page 
+Tomorrow 
+api integration of the filtering
 
-shop page -> filtering options 
-
-general fixes 
-display the sidebar 
-
-additions
-add the ham burger for admin pages 
-
-Admin side remaining work 
+remaining work 
 users page 
-orders page 
+product page 
+favorites page 
+
+backend 
+orders 
+and complete shopping with payment gateway integration
+
+
+
 

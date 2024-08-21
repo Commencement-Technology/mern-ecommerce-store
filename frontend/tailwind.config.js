@@ -4,7 +4,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        pink: "#EC4899",
+        "custom-pink-10": "#EC4899",
+        "custom-pink-20": "#c71870",
         orange: "",
       },
       letterSpacing: {

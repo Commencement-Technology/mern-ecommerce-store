@@ -49,6 +49,7 @@ export interface Products {
   description: string;
   price: number;
   image: any;
+  brand?: string;
 }
 
 export interface ProductData {

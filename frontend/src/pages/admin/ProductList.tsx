@@ -17,7 +17,7 @@ export const ProductList = () => {
   }, [page]);
 
   const fetchProducts = async (page: number, pageSize: number) => {
-    const res = await productService.getAllProducts(page, pageSize);
+    const res = await productService.getProductsPerPage(page, pageSize);
     console.log(res);
     if (res?.data) {
       const { products, page, pages, hasMore } = res.data;

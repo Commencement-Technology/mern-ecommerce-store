@@ -18,7 +18,7 @@ export const productService = {
     }
   },
 
-  getAllProducts: async (page = 1, pageSize = 3): Promise<any> => {
+  getProductsPerPage: async (page = 1, pageSize: number): Promise<any> => {
     try {
       const res = await fetchApi(
         endpoints.PRODUCTS + `?page=${page}&pageSize=${pageSize}`,
@@ -27,6 +27,18 @@ export const productService = {
       return res;
     } catch (error) {
       console.error("An error occured in fetching all products", error);
+    }
+  },
+
+  getAllProducts: async (): Promise<any> => {
+    try {
+      const res = await fetchApi(
+        endpoints.PRODUCTS + "all-products",
+        HTTP_METHODS.GET
+      );
+      return res;
+    } catch (error) {
+      console.error("An error occured in getting products", error);
     }
   },
 

@@ -24,13 +24,20 @@ import { FaUsers } from "react-icons/fa";
 import { BsInboxesFill } from "react-icons/bs";
 import { MdCategory } from "react-icons/md";
 import { MdOutlineProductionQuantityLimits } from "react-icons/md";
+import { FaPlusCircle } from "react-icons/fa";
+import { FaFilter } from "react-icons/fa6";
+import { Filter } from "../Home/Filter";
+import useWindowSize from "../../../hooks/useWindowSize";
 
 export default function Sidebar() {
   const naviagte = useNavigate();
   const dispatch = useAppDispatch();
-  const [showDrawer, setShowDrawer] = useState(false);
+  const [showDrawer, setShowDrawer] = useState<boolean>(false);
+  const [isFilterSidebarOpen, setIsFilterSidebarOpen] =
+    useState<boolean>(false);
   const { userInfo, isAdmin } = useAppSelector((state) => state.auth);
   const [loading, setLoading] = useState<boolean>(false);
+  const { windowWidth } = useWindowSize();
 
   const logoutUser = async () => {
     setLoading(true);
@@ -87,14 +94,18 @@ export default function Sidebar() {
     },
     {
       key: "6",
-      label: <Link to="/admin/add-product">Products</Link>,
+      label: <Link to="/admin/product-list">Products</Link>,
+    },
+    {
+      key: "7",
+      label: <Link to="/admin/add-product">Create Product</Link>,
     },
   ];
 
   const items = isAdmin ? [...commonItems, ...adminItems] : commonItems;
 
   return (
-    <div className="h-full">
+    <div>
       <NavigationDrawer
         showDrawer={showDrawer}
         setShowDrawer={setShowDrawer}
@@ -103,77 +114,94 @@ export default function Sidebar() {
         loading={loading}
         isAdmin={isAdmin}
       />
-      <div
-        className="cursor-pointer block md:hidden bg-zinc-900 absolute top-8 left-7"
-        onClick={() => setShowDrawer(true)}
-      >
-        <GiHamburgerMenu
-          style={{
-            color: "white",
-            fontSize: "30px",
-          }}
-        />
-      </div>
-      {/* */}
-      <div
-        className="bg-black hidden md:flex w-14 md:hover:w-40 z-50 transition ease-linear delay-200 duration-200 text-white h-[100vh] flex-col justify-between py-9 pl-4 overflow-hidden"
-        id="nav-container"
-      >
-        <div className="flex flex-col gap-7">
-          <div className="flex items-center gap-3 cursor-pointer transition ease-in hover:translate-x-2 hover:text-[#EC4899]">
-            <FaHome
+      <FilterDrawer
+        isFilterSidebarOpen={isFilterSidebarOpen}
+        setIsFilterSidebarOpen={setIsFilterSidebarOpen}
+      />
+      {windowWidth < 1344 && (
+        <div className="cursor-pointer z-50 w-full bg-zinc-900 fixed py-7 px-10 flex items-center justify-between">
+          <div onClick={() => setShowDrawer(true)}>
+            <GiHamburgerMenu
               style={{
-                fontSize: "20px",
+                color: "white",
+                fontSize: "30px",
               }}
             />
-            <Link to="/" className="font-normal hidden nav-item-name w-full">
-              Home
-            </Link>
           </div>
-          <div className="flex items-center gap-3 cursor-pointer transition ease-in hover:translate-x-2 hover:text-[#EC4899]">
-            <FaShoppingBag />
-            <p className="font-normal hidden nav-item-name">Shop</p>
-          </div>
-          <div className="flex items-center gap-3 cursor-pointer transition ease-in hover:translate-x-2 hover:text-[#EC4899]">
-            <FaCartShopping />
-            <p className="font-normal hidden nav-item-name ">Cart</p>
-          </div>
-          <div className="flex items-center gap-3 cursor-pointer transition ease-in hover:translate-x-2 hover:text-[#EC4899]">
-            <FaHeart />
-            <p className="font-normal hidden nav-item-name">Favorites</p>
+          <div onClick={() => setIsFilterSidebarOpen(true)}>
+            <FaFilter
+              style={{
+                color: "white",
+                fontSize: "30px",
+              }}
+            />
           </div>
         </div>
-        <div className="flex flex-col gap-3">
-          {userInfo ? (
-            <Dropdown menu={{ items }} rootClassName="rm-sidebar-dropdown">
-              <button onClick={(e) => e.preventDefault()}>
-                <Space className="text-sm">
-                  {userInfo.username}
-                  <DownOutlined />
-                </Space>
-              </button>
-            </Dropdown>
-          ) : (
-            <>
-              <div className="flex items-center gap-3 cursor-pointer transition ease-in hover:translate-x-2 hover:text-[#EC4899]">
-                <IoMdLogIn />
-                <Link to="/login" className="font-normal hidden nav-item-name">
-                  Login
-                </Link>
-              </div>
-              <div className="flex items-center gap-3 cursor-pointer transition ease-in hover:translate-x-2 hover:text-[#EC4899]">
-                <GoPersonFill />
-                <Link
-                  to="/register"
-                  className="font-normal hidden nav-item-name"
-                >
-                  Register
-                </Link>
-              </div>
-            </>
-          )}
+      )}
+      {windowWidth > 1344 && (
+        <div
+          className="bg-black w-14 md:hover:w-40 z-50 hover:w-full transition ease-linear delay-200 duration-200 text-white h-[100vh] xl:flex flex-col justify-between py-9 pl-4 overflow-hidden"
+          id="nav-container"
+        >
+          <div className="flex flex-col gap-7">
+            <div className="flex items-center gap-3 text-white cursor-pointer transition ease-in hover:translate-x-2 hover:text-[#EC4899]">
+              <FaHome
+                style={{
+                  fontSize: "20px",
+                }}
+              />
+              <Link to="/" className="font-normal hidden nav-item-name w-full">
+                Home
+              </Link>
+            </div>
+            <div className="flex items-center gap-3 cursor-pointer transition ease-in hover:translate-x-2 hover:text-[#EC4899]">
+              <FaCartShopping />
+              <p className="font-normal text-white hidden nav-item-name ">
+                Cart
+              </p>
+            </div>
+            <div className="flex items-center text-white gap-3 cursor-pointer transition ease-in hover:translate-x-2 hover:text-[#EC4899]">
+              <FaHeart />
+              <p className="font-normal text-white hidden nav-item-name">
+                Favorites
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-col gap-3">
+            {userInfo ? (
+              <Dropdown menu={{ items }} rootClassName="rm-sidebar-dropdown">
+                <a onClick={(e) => e.preventDefault()}>
+                  <Space className="text-sm">
+                    {userInfo.username}
+                    <DownOutlined />
+                  </Space>
+                </a>
+              </Dropdown>
+            ) : (
+              <>
+                <div className="flex items-center gap-3 cursor-pointer transition ease-in hover:translate-x-2 hover:text-[#EC4899]">
+                  <IoMdLogIn />
+                  <Link
+                    to="/login"
+                    className="font-normal hidden nav-item-name"
+                  >
+                    Login
+                  </Link>
+                </div>
+                <div className="flex items-center gap-3 cursor-pointer transition ease-in hover:translate-x-2 hover:text-[#EC4899]">
+                  <GoPersonFill />
+                  <Link
+                    to="/register"
+                    className="font-normal hidden nav-item-name"
+                  >
+                    Register
+                  </Link>
+                </div>
+              </>
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -215,16 +243,6 @@ const NavigationDrawer: React.FC<NavigationDrawerProps> = ({
             />
             <p className="font-normal text-lg w-full">Home</p>
           </Link>
-          <div className="flex items-center gap-5 cursor-pointer transition ease-in hover:translate-x-2 ">
-            <FaShoppingBag
-              style={{
-                fontSize: "25px",
-              }}
-            />
-            <Link to="" className="font-normal text-lg">
-              Shop
-            </Link>
-          </div>
           <div className="flex items-center gap-5 cursor-pointer transition ease-in hover:translate-x-2 ">
             <FaCartShopping
               style={{
@@ -269,20 +287,29 @@ const NavigationDrawer: React.FC<NavigationDrawerProps> = ({
                         <p className="font-normal text-lg w-full">Orders</p>
                       </Link>
                       <Link
-                        to="/category"
+                        to="/admin/categories"
                         className="flex items-center gap-5 cursor-pointer transition ease-in hover:translate-x-2"
                       >
                         <MdCategory style={{ fontSize: "40px" }} />
                         <p className="font-normal text-lg w-full">Category</p>
                       </Link>
                       <Link
-                        to="/products"
+                        to="/admin/product-list"
                         className="flex items-center gap-5 cursor-pointer transition ease-in hover:translate-x-2"
                       >
                         <MdOutlineProductionQuantityLimits
                           style={{ fontSize: "40px" }}
                         />
                         <p className="font-normal text-lg w-full">Products</p>
+                      </Link>
+                      <Link
+                        to="/admin/add-product"
+                        className="flex items-center gap-5 cursor-pointer transition ease-in hover:translate-x-2"
+                      >
+                        <FaPlusCircle style={{ fontSize: "40px" }} />
+                        <p className="font-normal text-lg w-full">
+                          Add Product
+                        </p>
                       </Link>
                     </div>
                     <button
@@ -356,6 +383,28 @@ const NavigationDrawer: React.FC<NavigationDrawerProps> = ({
             </>
           )}
         </div>
+      </div>
+    </Drawer>
+  );
+};
+
+interface FilterDrawerProps {
+  isFilterSidebarOpen: boolean;
+  setIsFilterSidebarOpen: (value: boolean) => void;
+}
+
+const FilterDrawer: React.FC<FilterDrawerProps> = ({
+  isFilterSidebarOpen,
+  setIsFilterSidebarOpen,
+}) => {
+  return (
+    <Drawer
+      open={isFilterSidebarOpen}
+      onClose={() => setIsFilterSidebarOpen(false)}
+      rootClassName="rm-navigation-drawer"
+    >
+      <div className="w-full">
+        <Filter width="100%" />
       </div>
     </Drawer>
   );

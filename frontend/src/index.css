@@ -120,3 +120,12 @@
 .rm-product-pagination .ant-pagination-item-active a {
   color: black; /* Black color for the active item */
 }
+
+.rm-checkbox .ant-checkbox-inner,
+.rm-radio-btn .ant-radio-inner {
+  background-color: #2a2222 !important;
+}
+
+.rm-checkbox .ant-checkbox-inner {
+  color: #c71870;
+}
