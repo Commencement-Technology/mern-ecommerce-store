@@ -11,6 +11,7 @@ const {
   fetchTopProducts,
   fetchNewProducts,
   fetchAllProducts,
+  filterProducts,
 } = require("../controllers/productController");
 const authorizeAdmin = require("../middleware/authorizeAdmin");
 const checkId = require("../middleware/checkId");
@@ -34,5 +35,7 @@ router
 router.get("/", validateToken, authorizeAdmin, fetchProducts);
 // user route
 router.route("/:id/reviews").post(validateToken, checkId, addProductReview);
+
+router.route("/filtered-products").post(filterProducts);
 
 module.exports = router;
