@@ -1,3 +1,4 @@
+import { IFilteredProducts } from "../types";
 import { endpoints, HTTP_METHODS } from "./endpoints";
 import { fetchApi } from "./utils";
 
@@ -79,6 +80,23 @@ export const productService = {
       return res;
     } catch (error) {
       console.error(`Failed to delete product, ${error}`);
+    }
+  },
+
+  filterProducts: async (body: IFilteredProducts): Promise<any> => {
+    const payload = {
+      checked: body.checked || [],
+      radio: body.radio || [],
+    };
+    try {
+      const res = await fetchApi(
+        endpoints.PRODUCTS + "/filtered-products",
+        HTTP_METHODS.POST,
+        payload
+      );
+      return res;
+    } catch (error) {
+      console.error("An error while filtering products", error);
     }
   },
 };

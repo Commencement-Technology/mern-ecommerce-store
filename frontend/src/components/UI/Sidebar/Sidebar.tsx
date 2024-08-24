@@ -28,6 +28,7 @@ import { FaPlusCircle } from "react-icons/fa";
 import { FaFilter } from "react-icons/fa6";
 import { Filter } from "../Home/Filter";
 import useWindowSize from "../../../hooks/useWindowSize";
+import { setIsFiltering } from "../../../features/Slicers/shopSlice";
 
 export default function Sidebar() {
   const naviagte = useNavigate();

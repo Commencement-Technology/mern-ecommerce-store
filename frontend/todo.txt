@@ -10,6 +10,10 @@ backend
 orders 
 and complete shopping with payment gateway integration
 
-
+remaining in home page 
+add the price filtering too 
+handle on mobile screens too
+design product page
+fix the sidebar styling and make the text visible and also fix the userInfo issue to show in the sidebar 
 
 

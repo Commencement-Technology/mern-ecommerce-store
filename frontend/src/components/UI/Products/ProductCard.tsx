@@ -6,7 +6,7 @@ import { FaLongArrowAltRight } from "react-icons/fa";
 import { CiHeart } from "react-icons/ci";
 import { Products } from "../../../types";
 
-export const Product: React.FC<Products> = ({
+export const ProductCard: React.FC<Products> = ({
   _id,
   name,
   description,

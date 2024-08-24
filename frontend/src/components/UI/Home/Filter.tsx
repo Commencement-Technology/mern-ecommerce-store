@@ -1,7 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import useCategories from "../../../hooks/useCategories";
 import { Checkbox, Form, Input, Radio } from "antd";
 import useBrands from "../../../hooks/useBrands";
+import { productService } from "../../../services/productService";
+import { useAppDispatch, useAppSelector } from "../../../hooks";
+import {
+  setIsFiltering,
+  setProducts,
+  setProductsError,
+  setProductsLoading,
+} from "../../../features/Slicers/shopSlice";
+import { handleApiStatusCode } from "../../../services/utils";
 
 interface FilterProps {
   width?: string;
@@ -9,7 +18,74 @@ interface FilterProps {
 
 export const Filter: React.FC<FilterProps> = ({ width = "40%" }) => {
   const { categories } = useCategories();
-  const { brands } = useBrands();
+  const { brands: initialBrands } = useBrands();
+  const [checked, setChecked] = useState<string[]>([]);
+  const [radio, setRadio] = useState<number[]>([]);
+  const [priceFilter, setPriceFilter] = useState<number>(0);
+  const [brands, setBrands] = useState<string[]>(initialBrands);
+  const dispatch = useAppDispatch();
+  const { products } = useAppSelector((state) => state.shop);
+
+  useEffect(() => {
+    dispatch(setIsFiltering(true));
+    filterProducts();
+  }, [checked, priceFilter]);
+
+  const filterProducts = async () => {
+    dispatch(setProductsLoading(true));
+    const res = await productService.filterProducts({ checked });
+    const { status, data } = handleApiStatusCode(res);
+    if (status === 200) {
+      let filteredProducts = data;
+      // Apply price filtering
+      if (priceFilter > 0) {
+        filteredProducts = filteredProducts.filter(
+          (product: any) => product.price === priceFilter
+        );
+      }
+      if (filteredProducts.length === 0) {
+        dispatch(setProducts([]));
+        dispatch(setProductsError("No products to display..."));
+      } else {
+        dispatch(setProducts(filteredProducts));
+        dispatch(setProductsError(""));
+      }
+    } else {
+      dispatch(setProductsError("Error while filtering products"));
+    }
+
+    dispatch(setProductsLoading(false));
+  };
+
+  const getUniqueBrands = () => {
+    const uniqueBrands = Array.from(
+      new Set(products?.map((product: any) => product.brand))
+    );
+    setBrands(uniqueBrands);
+  };
+
+  useEffect(() => {
+    getUniqueBrands();
+  }, [products]);
+
+  const handleCheck = (checkedValue: boolean, categoryId: string) => {
+    setChecked((prev) =>
+      checkedValue
+        ? [...prev, categoryId]
+        : prev.filter((c) => c !== categoryId)
+    );
+  };
+
+  const handlePriceChange = (newPriceFilter: number) => {
+    setPriceFilter(newPriceFilter || 0);
+  };
+
+  const handleBrandClick = (brandName: string) => {
+    const updatedProducts = products?.filter(
+      (product) => product.brand === brandName
+    );
+    dispatch(setProducts(updatedProducts));
+  };
 
   return (
     <div className="bg-zinc-800 rounded-md px-10 py-8 h-full" style={{ width }}>
@@ -21,8 +97,9 @@ export const Filter: React.FC<FilterProps> = ({ width = "40%" }) => {
           {categories?.map((category, index) => (
             <Checkbox
               key={index}
-              className="text-white"
               rootClassName="rm-checkbox"
+              className="text-white"
+              onChange={(e) => handleCheck(e.target.checked, category._id)}
             >
               {category.name}
             </Checkbox>
@@ -38,6 +115,7 @@ export const Filter: React.FC<FilterProps> = ({ width = "40%" }) => {
             <Radio
               key={index}
               className="text-white"
+              onChange={() => handleBrandClick(brand)}
               rootClassName="rm-radio-btn"
             >
               {brand}
@@ -50,16 +128,24 @@ export const Filter: React.FC<FilterProps> = ({ width = "40%" }) => {
           Filter by Price
         </button>
         <Form>
-          <Form.Item rootClassName="rm-form-input" className="">
+          <Form.Item rootClassName="rm-form-input">
             <Input
               placeholder="Enter price"
               className="bg-zinc-900 text-white placeholder:text-white"
+              onChange={(e) =>
+                handlePriceChange(parseFloat(e.target.value) || 0)
+              }
+              value={priceFilter}
+              type="number"
             />
           </Form.Item>
         </Form>
       </div>
       <div className="mt-1">
-        <button className="bg-zinc-900 py-2 text-white w-full rounded-md">
+        <button
+          className="bg-zinc-900 py-2 text-white w-full rounded-md"
+          onClick={() => window.location.reload()}
+        >
           Reset
         </button>
       </div>

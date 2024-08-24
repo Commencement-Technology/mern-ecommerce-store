@@ -62,3 +62,8 @@ export interface ProductData {
   product_category: string;
   imagePath: string;
 }
+
+export interface IFilteredProducts {
+  checked: string[];
+  radio?: number[];
+}
