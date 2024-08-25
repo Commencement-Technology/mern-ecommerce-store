@@ -11,7 +11,6 @@ const useCategories = () => {
       setIsLoading(true);
       const res = await categoryService.getAllCategories();
       const { status, data } = res;
-      console.log(res);
       if (status === 200) {
         setIsLoading(false);
         setCategories(data);

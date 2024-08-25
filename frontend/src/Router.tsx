@@ -14,6 +14,7 @@ import { UpdateProduct } from "./pages/admin/UpdateProduct";
 import { PrivateRoute } from "./components/Routes/PrivateRoute";
 import { AdminRoute } from "./pages/admin/AdminRoute";
 import { PageNotFound } from "./pages/PageNotFound";
+import ProductDetails from "./pages/products/ProductDetails";
 
 export default function Router() {
   return (
@@ -23,6 +24,7 @@ export default function Router() {
         <Route index={true} path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/product/:id" element={<ProductDetails />} />
 
         {/* can be accessed by registered users only */}
         <Route path="" element={<PrivateRoute />}>

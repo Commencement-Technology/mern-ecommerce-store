@@ -25,7 +25,6 @@ export const Category = () => {
     setIsLoading(true);
     const res = await categoryService.getAllCategories();
     const { status, data } = res;
-    console.log(res);
     if (status === 200) {
       setIsLoading(false);
       setCategories(data);
@@ -73,7 +72,6 @@ export const Category = () => {
     const { category } = values;
     setIsCategoryCreated(true);
     const res = await categoryService.addCategory(category);
-    console.log(res);
     handleApiResponse(
       res,
       "Category created successfully",
@@ -95,7 +93,6 @@ export const Category = () => {
       const id = selectedCategory?._id;
       setIsCategoryDeleted(true);
       const res = await categoryService.deleteCategory(id);
-      console.log(res);
       handleApiResponse(
         res,
         "Category deleted successfully",
@@ -117,7 +114,6 @@ export const Category = () => {
     const id = selectedCategory?._id;
     setIsCategoryUpdated(true);
     const res = await categoryService.updateCategory(id, modalInputValue);
-    console.log(res);
     handleApiResponse(
       res,
       "Category updated successfully",

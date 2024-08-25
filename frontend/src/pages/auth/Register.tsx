@@ -19,7 +19,6 @@ export default function Register() {
     setLoading(true);
     const { username, email, password } = values;
     const response = await authService.registerUser(username, email, password);
-    console.log(response);
     handleApiResponse(
       response,
       "Registeration failed",

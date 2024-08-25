@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import useCategories from "../../../hooks/useCategories";
 import { Checkbox, Form, Input, Radio } from "antd";
 import useBrands from "../../../hooks/useBrands";
@@ -20,18 +20,12 @@ export const Filter: React.FC<FilterProps> = ({ width = "40%" }) => {
   const { categories } = useCategories();
   const { brands: initialBrands } = useBrands();
   const [checked, setChecked] = useState<string[]>([]);
-  const [radio, setRadio] = useState<number[]>([]);
   const [priceFilter, setPriceFilter] = useState<number>(0);
   const [brands, setBrands] = useState<string[]>(initialBrands);
   const dispatch = useAppDispatch();
   const { products } = useAppSelector((state) => state.shop);
 
-  useEffect(() => {
-    dispatch(setIsFiltering(true));
-    filterProducts();
-  }, [checked, priceFilter]);
-
-  const filterProducts = async () => {
+  const filterProducts = useCallback(async () => {
     dispatch(setProductsLoading(true));
     const res = await productService.filterProducts({ checked });
     const { status, data } = handleApiStatusCode(res);
@@ -55,18 +49,23 @@ export const Filter: React.FC<FilterProps> = ({ width = "40%" }) => {
     }
 
     dispatch(setProductsLoading(false));
-  };
+  }, [checked, dispatch, priceFilter]);
 
-  const getUniqueBrands = () => {
+  useEffect(() => {
+    dispatch(setIsFiltering(true));
+    filterProducts();
+  }, [checked, priceFilter, dispatch, filterProducts]);
+
+  const getUniqueBrands = useCallback(() => {
     const uniqueBrands = Array.from(
       new Set(products?.map((product: any) => product.brand))
     );
     setBrands(uniqueBrands);
-  };
+  }, [products]);
 
   useEffect(() => {
     getUniqueBrands();
-  }, [products]);
+  }, [products, getUniqueBrands]);
 
   const handleCheck = (checkedValue: boolean, categoryId: string) => {
     setChecked((prev) =>

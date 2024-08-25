@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import MainLayout from "../../components/Layouts/MainLayout";
 import { Filter } from "../../components/UI/Home/Filter";
 import useWindowSize from "../../hooks/useWindowSize";
@@ -21,26 +21,29 @@ export default function Home() {
   const dispatch = useAppDispatch();
 
   // Fetch products based on pagination
-  const fetchProducts = async (page: number, pageSize: number) => {
-    dispatch(setProductsLoading(true));
-    const res = await productService.getProductsPerPage(page, pageSize);
-    if (res?.data) {
-      const { products, page, pages } = res.data;
-      dispatch(setProducts(products));
-      setPage(page);
-      setPages(pages);
-    } else {
-      dispatch(setProductsError("Failed to fetch products"));
-    }
-    dispatch(setProductsLoading(false));
-  };
+  const fetchProducts = useCallback(
+    async (page: number, pageSize: number) => {
+      dispatch(setProductsLoading(true));
+      const res = await productService.getProductsPerPage(page, pageSize);
+      if (res?.data) {
+        const { products, page, pages } = res.data;
+        dispatch(setProducts(products));
+        setPage(page);
+        setPages(pages);
+      } else {
+        dispatch(setProductsError("Failed to fetch products"));
+      }
+      dispatch(setProductsLoading(false));
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
     if (isFiltering) {
     } else {
       fetchProducts(page, 12);
     }
-  }, [page, isFiltering]);
+  }, [page, isFiltering, fetchProducts]);
 
   // Handle page change
   const handlePageChange = (page: number) => {

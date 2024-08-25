@@ -1,5 +1,4 @@
 import { FaHome } from "react-icons/fa";
-import { FaShoppingBag } from "react-icons/fa";
 import { FaCartShopping } from "react-icons/fa6";
 import { FaHeart } from "react-icons/fa";
 import { GoPersonFill } from "react-icons/go";
@@ -28,7 +27,6 @@ import { FaPlusCircle } from "react-icons/fa";
 import { FaFilter } from "react-icons/fa6";
 import { Filter } from "../Home/Filter";
 import useWindowSize from "../../../hooks/useWindowSize";
-import { setIsFiltering } from "../../../features/Slicers/shopSlice";
 
 export default function Sidebar() {
   const naviagte = useNavigate();
@@ -43,7 +41,6 @@ export default function Sidebar() {
   const logoutUser = async () => {
     setLoading(true);
     const response = await authService.logout();
-    console.log(response);
     if (response?.status === 200) {
       setLoading(false);
       dispatch(logout());

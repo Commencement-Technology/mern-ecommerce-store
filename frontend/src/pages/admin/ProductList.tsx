@@ -18,10 +18,8 @@ export const ProductList = () => {
 
   const fetchProducts = async (page: number, pageSize: number) => {
     const res = await productService.getProductsPerPage(page, pageSize);
-    console.log(res);
     if (res?.data) {
       const { products, page, pages, hasMore } = res.data;
-      console.log(products, page, pages, hasMore);
       setProducts(products);
       setPage(page);
       setPages(pages);

@@ -27,7 +27,6 @@ export const AddProduct = () => {
   const fetchCategories = async () => {
     const res = await categoryService.getAllCategories();
     const { status, data } = res;
-    console.log(res);
     if (status === 200) {
       setCategories(data);
     } else {
@@ -46,12 +45,10 @@ export const AddProduct = () => {
     setFileList(newFileList.slice(-1));
     const formData = new FormData();
     const file = fileList[0]?.originFileObj;
-    console.log(file);
     if (file && !imagePath && !imageUploaded) {
       setImageUploaded(true);
       formData.append("image", file);
       const res = await uploadImgService.uploadImage(formData);
-      console.log(res);
       const { status, data } = res;
       if (status === 200) {
         setImagePath(data?.image);
@@ -63,7 +60,6 @@ export const AddProduct = () => {
   };
 
   const handleSubmitProductForm = async (values: any) => {
-    console.log(values);
     const {
       product_name,
       product_brand,
@@ -84,7 +80,6 @@ export const AddProduct = () => {
     productData.append("countInStock", product_count_in_stock);
     setAddingProduct(true);
     const res = await productService.addProduct(productData);
-    console.log(res);
     const { data, status } = handleApiStatusCode(res);
     if (status === 200 || status === 201) {
       setAddingProduct(false);

@@ -19,7 +19,6 @@ export default function UpdateProfile() {
   const [loading, setLoading] = useState<boolean>(false);
 
   const onFinish = async (values: any) => {
-    console.log(values);
     const { username, email, password } = values;
     if (values.password !== values.confirmPassword) {
       toast.error("Passwords do not match");
@@ -32,7 +31,6 @@ export default function UpdateProfile() {
           email,
           password
         );
-        console.log(response);
         handleApiResponse(
           response,
           "Unauthorized...Please login first..",

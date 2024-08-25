@@ -9,7 +9,6 @@ export const userService = {
     updatedUserPassword: string
   ): Promise<any> => {
     try {
-      console.log("User id : ", userId);
       const res = await fetchApi(
         endpoints.USERS + "update-profile",
         HTTP_METHODS.PUT,

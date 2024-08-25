@@ -1,10 +1,10 @@
 import React from "react";
-import ProductImage from "../../../assets/images/image-1723300089116.jpg";
 import Button from "../../Buttons/Button";
 import { IoCartOutline } from "react-icons/io5";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import { CiHeart } from "react-icons/ci";
 import { Products } from "../../../types";
+import { useNavigate } from "react-router-dom";
 
 export const ProductCard: React.FC<Products> = ({
   _id,
@@ -14,13 +14,17 @@ export const ProductCard: React.FC<Products> = ({
   image,
   brand,
 }) => {
+  const navigate = useNavigate();
   const handleDescription = (productDescription: string) => {
     let newDescription = productDescription.substring(0, 80);
     return newDescription;
   };
 
   return (
-    <div className="bg-zinc-800 rounded text-white">
+    <div
+      className="bg-zinc-800 rounded text-white cursor-pointer"
+      onClick={() => navigate(`/product/${_id}`)}
+    >
       <div className="relative">
         <img src={image} alt="Product" />
         <div className="absolute top-4 right-4 text-white">

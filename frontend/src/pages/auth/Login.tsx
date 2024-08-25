@@ -18,7 +18,6 @@ export default function Login() {
   const onFinish = async (values: any) => {
     setLoading(true);
     const response = await authService.loginUser(values.email, values.password);
-    console.log(response);
     handleApiResponse(
       response,
       "Login failed",
